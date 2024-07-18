@@ -1,0 +1,5 @@
+#AF574A redwood
+#6E6961 dim grey
+#DB9397 puce
+#3C3631 taupe
+#E59F93 melon
