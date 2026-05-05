@@ -1,258 +1,772 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfolio</title>
-<link rel="stylesheet" href="styles.css">
+<title>Robin Guerrero — Developer & Educator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;800&display=swap" rel="stylesheet">
-<script src="https://kit.fontawesome.com/0fc52d104c.js" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --plum-deep:    #3E2440;
+    --plum-mid:     #7A4A72;
+    --plum-light:   #C4A8C0;
+    --plum-wash:    #F5EEF4;
+    --amber:        #D4924A;
+    --amber-light:  #EFC88A;
+    --amber-wash:   #FAF3E8;
+    --parchment:    #FAF6F0;
+    --ink:          #2A1A28;
+    --ink-mid:      #5C3D58;
+    --ink-light:    #9A7A96;
+    --white:        #FFFFFF;
+  }
 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--parchment);
+    color: var(--ink);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(250, 246, 240, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(196, 168, 192, 0.2);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--plum-deep);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--ink-mid);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--amber); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 8rem 3rem 4rem;
+    gap: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -120px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: var(--plum-light);
+    opacity: 0.12;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 10%;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: var(--amber-light);
+    opacity: 0.15;
+  }
+
+  .hero-text { position: relative; z-index: 1; }
+
+  .hero-eyebrow {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 28px; height: 1px;
+    background: var(--amber);
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 500;
+    line-height: 1.08;
+    color: var(--plum-deep);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--amber);
+  }
+
+  .hero-bio {
+    font-size: 1.05rem;
+    color: var(--ink-mid);
+    max-width: 460px;
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+    line-height: 1.75;
+  }
+
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 0.8rem 1.8rem;
+    background: var(--plum-deep);
+    color: var(--plum-wash);
+    border-radius: 3px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: var(--plum-mid); transform: translateY(-1px); }
+
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 0.8rem 1.8rem;
+    border: 1px solid var(--plum-light);
+    color: var(--plum-deep);
+    border-radius: 3px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, transform 0.15s;
+  }
+  .btn-secondary:hover { border-color: var(--amber); color: var(--amber); transform: translateY(-1px); }
+
+  /* AVATAR */
+  .hero-visual { display: flex; justify-content: center; align-items: center; position: relative; z-index: 1; }
+
+  .avatar-wrap {
+    position: relative;
+    width: 280px; height: 280px;
+  }
+
+  .avatar-ring {
+    position: absolute; inset: -12px;
+    border-radius: 50%;
+    border: 1.5px solid var(--plum-light);
+    opacity: 0.5;
+  }
+
+  .avatar-ring-2 {
+    position: absolute; inset: -28px;
+    border-radius: 50%;
+    border: 1px solid var(--amber-light);
+    opacity: 0.3;
+  }
+
+  .avatar-circle {
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: var(--plum-deep);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+
+  .avatar-initials {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5rem;
+    font-weight: 500;
+    color: var(--plum-light);
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+
+  .avatar-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+
+  .badge {
+    position: absolute;
+    bottom: 10px; right: -20px;
+    background: var(--amber);
+    color: var(--white);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.45rem 1rem;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  /* STATS ROW */
+  .stats-row {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(196, 168, 192, 0.25);
+  }
+
+  .stat-item { text-align: left; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--plum-deep);
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .stat-label { font-size: 0.75rem; color: var(--ink-light); letter-spacing: 0.04em; }
+
+  /* SECTION SHARED */
+  section { padding: 6rem 3rem; }
+
+  .section-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-eyebrow::before { content: ''; display: block; width: 20px; height: 1px; background: var(--amber); }
+
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 500;
+    color: var(--plum-deep);
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ABOUT */
+  .about { background: var(--white); }
+  .about-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 5rem; align-items: start;
+  }
+
+  .about-body {
+    font-size: 1rem; color: var(--ink-mid);
+    font-weight: 300; line-height: 1.85;
+  }
+  .about-body p + p { margin-top: 1.25rem; }
+
+  .skills-grid { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .skill-group-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .skill-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .skill-pill {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 2px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+  .pill-plum { background: var(--plum-wash); color: var(--plum-mid); border: 1px solid rgba(196,168,192,0.4); }
+  .pill-amber { background: var(--amber-wash); color: #7A4A10; border: 1px solid rgba(212,146,74,0.3); }
+  .pill-ink { background: rgba(42,26,40,0.05); color: var(--ink-mid); border: 1px solid rgba(42,26,40,0.1); }
+
+  /* PROJECTS */
+  .projects { background: var(--parchment); }
+  .projects-inner { max-width: 1100px; margin: 0 auto; }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .project-card {
+    background: var(--white);
+    border-radius: 4px;
+    border: 1px solid rgba(196, 168, 192, 0.2);
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+    text-decoration: none;
+    display: flex; flex-direction: column;
+  }
+  .project-card:hover { transform: translateY(-4px); border-color: var(--plum-light); }
+
+  .project-thumb {
+    height: 180px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.04em;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    position: absolute; inset: 0;
+  }
+
+  .thumb-plum { background: var(--plum-deep); }
+  .thumb-amber { background: #8A5A24; }
+  .thumb-mid { background: var(--plum-mid); }
+  .thumb-sel { background: #4A5C3A; }
+
+  .thumb-label {
+    position: relative; z-index: 1;
+    text-align: center; padding: 1rem;
+  }
+
+  .project-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+  .project-tag {
+    font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--amber); margin-bottom: 0.5rem;
+  }
+  .project-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem; font-weight: 600; color: var(--plum-deep);
+    margin-bottom: 0.6rem; line-height: 1.25;
+  }
+  .project-desc { font-size: 0.88rem; color: var(--ink-mid); font-weight: 300; line-height: 1.65; flex: 1; }
+  .project-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 1.25rem;
+    font-size: 0.8rem; font-weight: 500; letter-spacing: 0.04em;
+    color: var(--plum-mid); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .project-link:hover { color: var(--amber); }
+  .project-link svg { width: 14px; height: 14px; }
+
+  /* EXPERIENCE */
+  .experience { background: var(--white); }
+  .experience-inner { max-width: 800px; margin: 0 auto; }
+
+  .timeline { margin-top: 3rem; display: flex; flex-direction: column; gap: 0; }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 2rem;
+    padding-bottom: 2.5rem;
+    position: relative;
+  }
+
+  .timeline-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 139px; top: 8px; bottom: 0;
+    width: 1px;
+    background: rgba(196,168,192,0.3);
+  }
+
+  .timeline-date {
+    font-size: 0.78rem; color: var(--ink-light);
+    font-weight: 400; padding-top: 3px;
+    text-align: right; letter-spacing: 0.02em;
+    line-height: 1.5;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: 132px; top: 6px;
+    width: 15px; height: 15px;
+    border-radius: 50%;
+    background: var(--plum-wash);
+    border: 2px solid var(--plum-light);
+    z-index: 1;
+  }
+
+  .timeline-dot.active { background: var(--amber); border-color: var(--amber); }
+
+  .timeline-content { padding-left: 0.5rem; }
+  .timeline-role {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem; font-weight: 600; color: var(--plum-deep);
+    line-height: 1.2; margin-bottom: 2px;
+  }
+  .timeline-company { font-size: 0.82rem; color: var(--amber); font-weight: 500; margin-bottom: 0.6rem; }
+  .timeline-desc { font-size: 0.88rem; color: var(--ink-mid); font-weight: 300; line-height: 1.7; }
+
+  /* CONTACT */
+  .contact { background: var(--plum-deep); }
+  .contact-inner { max-width: 700px; margin: 0 auto; text-align: center; }
+
+  .contact .section-eyebrow { justify-content: center; }
+  .contact .section-eyebrow::before { display: none; }
+
+  .contact h2 { color: var(--plum-wash); margin-bottom: 1rem; }
+  .contact-sub { font-size: 1rem; color: var(--plum-light); font-weight: 300; margin-bottom: 3rem; line-height: 1.7; }
+
+  .contact-links { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  .contact-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 0.85rem 2rem;
+    border: 1px solid rgba(196,168,192,0.4);
+    color: var(--plum-wash);
+    border-radius: 3px;
+    font-size: 0.85rem; font-weight: 400; letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .contact-btn:hover { background: rgba(196,168,192,0.1); border-color: var(--plum-light); }
+  .contact-btn.amber-btn { background: var(--amber); border-color: var(--amber); color: var(--white); }
+  .contact-btn.amber-btn:hover { background: var(--amber-light); border-color: var(--amber-light); color: var(--ink); }
+
+  /* FOOTER */
+  footer {
+    background: var(--plum-deep);
+    border-top: 1px solid rgba(196,168,192,0.15);
+    padding: 1.5rem 3rem;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-copy { font-size: 0.78rem; color: var(--ink-light); }
+  .footer-name { font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; color: var(--plum-light); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up { animation: fadeUp 0.7s ease both; }
+  .fade-up-2 { animation: fadeUp 0.7s 0.15s ease both; }
+  .fade-up-3 { animation: fadeUp 0.7s 0.3s ease both; }
+  .fade-up-4 { animation: fadeUp 0.7s 0.45s ease both; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.2rem; }
+    .hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 3rem; gap: 3rem; text-align: center; }
+    .hero::before, .hero::after { display: none; }
+    .hero-eyebrow { justify-content: center; }
+    .hero-bio { margin-left: auto; margin-right: auto; }
+    .hero-ctas { justify-content: center; }
+    .stats-row { justify-content: center; }
+    .hero-visual { order: -1; }
+    .about-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    section { padding: 4rem 1.5rem; }
+    .timeline-item { grid-template-columns: 100px 1fr; gap: 1rem; }
+    .timeline-item::after { left: 99px; }
+    .timeline-dot { left: 92px; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
 </head>
-sdgsd
+<body>
 
-<body class="main-content">
-<header class="section sec1 header active" id="home">
-<div class="header-content">
-<div class="left-header">
-<div class="header-shape"></div>
-   <div class="image">
-       <img src="img/selfie.jpg" alt="Portrait of Robin">
-</div>
-</div>
-<div class="right-header">
-<h1 class="name">
-   Hi, I'm <span>Robin Guerrero.</span>
-   A Web Developer.
-</h1>
-<p>I'm a web developer. I am passionate about practical & beautiful web design.
-</p>
-<div class="button-container">
-       <div class="download-button">
-           <div class="button-top">
-           <i class="fa-solid fa-download"></i>
-           Download Resume
-           </div>
-           <div class="button-bottom"></a>
-               <a href="img/Resume_2024.pdf" target="_blank">
-                    <i class="fa-solid fa-file-pdf"></i>
-               58KB</a>
-           </div>
-       </div>
-    
-   </div>
+<nav>
+  <a class="nav-logo" href="#">Robin Guerrero</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Work</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
 
-</div>
-</div>
-</header>
-<main>
-<section class="section sec2 about" id="about">
-   <div class="main-title">
-       <h2>
-           About <span>me</span>
-       </h2>
-   </div>
-   <div class="about-container">
-       <div class="left-about">
-           <p>
-               <b>My love for web design began</b> the summer of 2003 when
-               my best friend introduced me to Neopets.
-               We spent every night and weekend dedicated
-               to learning HTML & CSS to make the *~coolest~*
-               guild and profile layouts. </br></br>
-               Fast forward to 2020, I decided to change
-                   careers after 5 years as an elementary school counselor.
-                   My <a href="https://jesusguerrero.dev">husband</a> started working from home as a web developer
-               so now we are a programming duo. ;)</br></br>
-               Looking back, I see now that in every job I have had,
-               I have always been gravitating towards aspects of
-               creating practical, efficient solutions, as well as
-               incorporating design elements into my systems and routines.</br></br>
-               When I was an elementary school counselor, one of the
-               first big projects I did was create my own data collection system
-               that was easy for other stakeholders to view graphically and access
-               easily. I also loved creating digital infographics for parents
-               as a way to connect with them and also express my creativity. </br></br>
-               Now that I'm a mother of 4, it's a dream to be able to do what I love
-               from home and maximize time with my family. In my free time, I love cooking, DIY projects,
-               sewing, painting, gardening, and reading fantasy. Thank you for taking the time
-               to learn about me! &hearts;
-           </p>
-                   <div class="button-container">
-                       <div class="download-button">
-                           <div class="button-top">
-                           <i class="fa-solid fa-download"></i>
-                           Download Resume
-                           </div>
-                           <div class="button-bottom">
-                            <a href="img/Resume_2024.pdf" target="_blank">
-                                <i class="fa-solid fa-file-pdf"></i>
-                           58KB</a>
-                           </div>
-                       </div>
-                   </div>
-   </div>
-       <div class="right-about">
-           <h4>Tech Skills</h4>
-           <p>
-               <li><i class="fa-solid fa-code"></i>HTML & (S)CSS</li>
-               <li><i class="fa-solid fa-code"></i>JavaScript</li>
-               <li><i class="fa-solid fa-code"></i>Git & Github</li>
-           </p>
-       </div>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <p class="hero-eyebrow fade-up">Developer &amp; Educator</p>
+    <h1 class="fade-up-2">Building for the <em>humans</em> behind the screen.</h1>
+    <p class="hero-bio fade-up-3">I'm a school counselor turned frontend developer with 5+ years working with students and families. I bring both technical skill and genuine classroom empathy to every project I build.</p>
+    <div class="hero-ctas fade-up-4">
+      <a href="#projects" class="btn-primary">See my work</a>
+      <a href="#contact" class="btn-secondary">Get in touch</a>
+    </div>
+    <div class="stats-row fade-up-4">
+      <div class="stat-item">
+        <div class="stat-num">600+</div>
+        <div class="stat-label">Students served</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">5+</div>
+        <div class="stat-label">Years counseling</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">PK–12</div>
+        <div class="stat-label">Grade range</div>
+      </div>
+    </div>
+  </div>
 
-
-
-
-<div class="experience">
-           <h4>Experience</h4>
-           <ol>
-           <div class="list-item"><li><i class="fa-solid fa-briefcase"></i> Freelance Web Developer</div><span><em>May 2020 - Present</em></li></span>
-           <div class="list-item"><li><i class="fa-solid fa-briefcase"></i> School Counselor</div><span><em>August 2016 - June 2021</em></li></span>
-           <div class="list-item"><li><i class="fa-solid fa-briefcase"></i> Administrative Aide</div><span><em>January 2009 - June 2010</em></li></span>
-           <div class="list-item"><li><i class="fa-solid fa-briefcase"></i> Starbucks Barista/Shift Supervisor</div><span><em>December 2007 - December 2015</em></li></span>
-       </ol>
-</div>
-
-
-     
-</div>
+  <div class="hero-visual fade-up-3">
+    <div class="avatar-wrap">
+      <div class="avatar-ring"></div>
+      <div class="avatar-ring-2"></div>
+      <div class="avatar-circle">
+        <img src="img/selfie.jpg" alt="Robin Guerrero" class="avatar-img" onerror="this.style.display='none'">
+        <span class="avatar-initials">RG</span>
+      </div>
+      <span class="badge">Rookie Teacher of the Year 2020</span>
+    </div>
+  </div>
 </section>
 
-
-
-
-<section class="section sec3 portfolio" id="portfolio">
-   <div class="main-title">
-       <h2>
-           My <span>work</span>
-       </h2>
-   </div>
-
-   <div class="portfolios">
-       <div class="portfolio-item">
-           <div class="image">
-               <img src="img/Portfolio Screenshots/Screenshot 2024-07-17 134742.png" alt="">
-           </div>
-           <div class="hover-items">
-               <h3>Project Source</h3>
-               <div class="icons">
-                   <a href="http://" target="_blank">
-                    <div class="icon">   
-                    <i class="fab fa-github"></i></div>
-                   </a>
-               </div>
-           </div>
-       </div>
-       
-       <div class="portfolio-item">
-        <div class="image">
-            <img src="img/Portfolio Screenshots/Screenshot 2024-07-17 135202.png" alt="">
-        </div>
-        <div class="hover-items">
-            <h3>Project Source</h3>
-            
-            <div class="icons">
-                <a href="http://" target="_blank">
-                 <div class="icon">   
-                 <i class="fab fa-github"></i></div>
-                </a>
-            </div>
-        </div>
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-inner">
+    <div>
+      <p class="section-eyebrow">About me</p>
+      <h2>Where counseling meets code</h2>
+      <div class="about-body">
+        <p>I spent five years as a school counselor — working with hundreds of students through grief, anxiety, conflict, learning differences, and everything in between. That work taught me something that no bootcamp can: how people actually feel when a tool fails them.</p>
+        <p>In 2020 I began learning to build for the web, studying alongside my husband and growing my skills through freeCodeCamp, personal projects, and now real client work at Remedy Web. I build things in React, Shopify, and vanilla JavaScript — with a counselor's instinct for what users actually need.</p>
+        <p>I'm also a homeschooling mother of five who has spent four years planning and teaching Waldorf-inspired curriculum. I understand schools, families, and classrooms from the inside — which is exactly the perspective EdTech needs more of.</p>
+      </div>
     </div>
-    
-    <div class="portfolio-item">
-        <div class="image">
-            <img src="img/Portfolio Screenshots/Screenshot 2024-07-17 134742.png" alt="">
+    <div>
+      <p class="section-eyebrow">Skills</p>
+      <div class="skills-grid">
+        <div>
+          <p class="skill-group-label">Frontend development</p>
+          <div class="skill-pills">
+            <span class="skill-pill pill-plum">JavaScript</span>
+            <span class="skill-pill pill-plum">React</span>
+            <span class="skill-pill pill-plum">HTML &amp; CSS</span>
+            <span class="skill-pill pill-plum">Shopify / Liquid</span>
+            <span class="skill-pill pill-plum">Git &amp; GitHub</span>
+          </div>
         </div>
-        <div class="hover-items">
-            <h3>Project Source</h3>
-            <div class="icons">
-                <a href="http://" target="_blank">
-                 <div class="icon">   
-                 <i class="fab fa-github"></i></div>
-                </a>
-            </div>
+        <div>
+          <p class="skill-group-label">Design</p>
+          <div class="skill-pills">
+            <span class="skill-pill pill-amber">Adobe Photoshop</span>
+            <span class="skill-pill pill-amber">Canva</span>
+            <span class="skill-pill pill-amber">Figma (familiar)</span>
+          </div>
         </div>
+        <div>
+          <p class="skill-group-label">EdTech &amp; LMS</p>
+          <div class="skill-pills">
+            <span class="skill-pill pill-ink">Google Classroom</span>
+            <span class="skill-pill pill-ink">Canvas</span>
+            <span class="skill-pill pill-ink">Nearpod</span>
+            <span class="skill-pill pill-ink">ClassDojo</span>
+            <span class="skill-pill pill-ink">Zoom</span>
+            <span class="skill-pill pill-ink">Microsoft Teams</span>
+          </div>
+        </div>
+        <div>
+          <p class="skill-group-label">Counseling &amp; SEL</p>
+          <div class="skill-pills">
+            <span class="skill-pill pill-plum">Safer Smarter Kids</span>
+            <span class="skill-pill pill-plum">CASEL Framework</span>
+            <span class="skill-pill pill-plum">IEP / 504</span>
+            <span class="skill-pill pill-plum">Crisis Intervention</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <p class="portfolio-text">This is an example of a product landing page I made for an astrologer, including embedded videos.</p>
-    <p class="portfolio-text">This is a registration form I created using HTML/CSS.</p>
-    <p class="portfolio-text">New projects coming soon.</p>
-   </div>
-
-  
-
+  </div>
 </section>
-<section class="section sec4 blogs" id="blogs"></section>
-<section class="section sec5 contact" id="contact">
-    <div class="contact-container">
-        <div class="main-title">
-            <h2>
-                Contact <span>me</span>
-            </h2>
-        </div>
-        <div class="contact-content-con">
-            <div class="contact">
-                <h4>Get in touch with me</h4>
-                <form action="" class="contact-form">
-                    <div class="input-control i-c-2">
-                        <input class="input" type="text" required placeholder="NAME">
-                        <input class="input" type="text" required placeholder="EMAIL">
-                    </div>
-                    <div class="input-control">
-                        <input class="input" type="text" required placeholder="SUBJECT">
-                    </div>
-                    <div class="input-control">
-                        <textarea name="" id="" cols="15" rows="10" placeholder="Tell me about your project..."></textarea>
-                    </div>
-                    <div class="submit-btn">
-                        <div class="button-container">
-                            <div class="download-button">
-                                <div class="button-top">
-                                <i class="fa-solid fa-download"></i>
-                                Submit Form
-                                </div>
-                                <div class="button-bottom">
-                                    <span>Thank you!</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-                
-            </div>
-            <div class="right-contact">
 
-            </div>
+<!-- PROJECTS -->
+<section class="projects" id="projects">
+  <div class="projects-inner">
+    <p class="section-eyebrow">Selected work</p>
+    <h2>Projects that bridge people &amp; technology</h2>
+    <div class="projects-grid">
+
+      <a class="project-card" href="sel-tool.html">
+        <div class="project-thumb thumb-sel">
+          <div class="thumb-label">Feelings Wheel</div>
         </div>
+        <div class="project-body">
+          <p class="project-tag">SEL · React · EdTech</p>
+          <p class="project-title">Interactive Feelings Wheel</p>
+          <p class="project-desc">An interactive emotion identification tool for K–5 students. Built with vanilla JS and SVG, it maps core emotions to specific feelings and offers age-appropriate coping strategies and body-awareness check-ins.</p>
+          <span class="project-link">
+            View project
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="project-card" href="#">
+        <div class="project-thumb thumb-amber">
+          <div class="thumb-label">Shopify Storefront</div>
+        </div>
+        <div class="project-body">
+          <p class="project-tag">Frontend · Shopify · Liquid</p>
+          <p class="project-title">Client Storefront — Remedy Web</p>
+          <p class="project-desc">A custom Shopify storefront built with Dawn theme architecture, Liquid templating, and custom sections. Focused on accessible UI, clean visual hierarchy, and smooth checkout experience.</p>
+          <span class="project-link">
+            View project
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="project-card" href="#">
+        <div class="project-thumb thumb-plum">
+          <div class="thumb-label">Design Work</div>
+        </div>
+        <div class="project-body">
+          <p class="project-tag">Design · Canva · Photoshop</p>
+          <p class="project-title">Educational graphic design</p>
+          <p class="project-desc">A collection of parent newsletters, SEL infographics, and classroom visuals created during my time as a school counselor. Designed to be warm, accessible, and easy to act on.</p>
+          <span class="project-link">
+            View project
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="project-card" href="#">
+        <div class="project-thumb thumb-mid">
+          <div class="thumb-label">Curriculum</div>
+        </div>
+        <div class="project-body">
+          <p class="project-tag">Education · Waldorf · Curriculum</p>
+          <p class="project-title">Homeschool curriculum planning</p>
+          <p class="project-desc">Four years of hands-on Waldorf-inspired curriculum development across multiple grade levels — integrating arts, literature, movement, and core academics into individualized learning plans.</p>
+          <span class="project-link">
+            View project
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+          </span>
+        </div>
+      </a>
+
     </div>
+  </div>
 </section>
-</main>
 
+<!-- EXPERIENCE -->
+<section class="experience" id="experience">
+  <div class="experience-inner">
+    <p class="section-eyebrow">Experience</p>
+    <h2>Where I've been</h2>
+    <div class="timeline">
 
-<div class="controls">
-<div class="control control-1 active-btn" data-id="home">
-<i class="fa-solid fa-house"></i>
-</div>
-<div class="control control-2" data-id="about">
-<i class="fa-solid fa-user"></i>
-</div>
-<div class="control control-3" data-id="portfolio">
-<i class="fa-solid fa-briefcase"></i>
-</div>
+      <div class="timeline-item">
+        <div class="timeline-date">Apr 2026<br>— Present</div>
+        <div class="timeline-dot active"></div>
+        <div class="timeline-content">
+          <p class="timeline-role">Junior Web Developer</p>
+          <p class="timeline-company">Remedy Web · Remote</p>
+          <p class="timeline-desc">Building and customizing Shopify storefronts and React components for client-facing web applications. Participating in discovery calls, QA testing, and visual design decisions.</p>
+        </div>
+      </div>
 
-<div class="control control-5" data-id="contact">
-<i class="fa-solid fa-envelope"></i>
-</div>
-</div>
+      <div class="timeline-item">
+        <div class="timeline-date">2021<br>— Present</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <p class="timeline-role">Independent Educator &amp; Curriculum Developer</p>
+          <p class="timeline-company">Home-Based · Broken Arrow, OK</p>
+          <p class="timeline-desc">Planning and delivering Waldorf-inspired and multi-disciplinary curriculum for four children across multiple grade levels over four years.</p>
+        </div>
+      </div>
 
+      <div class="timeline-item">
+        <div class="timeline-date">Aug 2016<br>— Jun 2021</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <p class="timeline-role">School Counselor</p>
+          <p class="timeline-company">iPreparatory Academy · Miami, FL</p>
+          <p class="timeline-desc">Provided comprehensive counseling to 600+ students across PK–12, implemented Safer Smarter Kids SEL curriculum, delivered virtual counseling via Zoom and Teams, and earned Rookie Teacher of the Year (2020).</p>
+        </div>
+      </div>
 
-<script src="app.js"></script>
+      <div class="timeline-item">
+        <div class="timeline-date">Jan 2009<br>— Jun 2010</div>
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <p class="timeline-role">Administrative Aide</p>
+          <p class="timeline-company">ASRC Federal · Remote</p>
+          <p class="timeline-desc">Supported shareholder outreach, authored newsletters, and assisted the training coordinator for contractors at Kennedy Space Center.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <p class="section-eyebrow">Get in touch</p>
+    <h2>Let's build something meaningful</h2>
+    <p class="contact-sub">Whether you're looking for a developer who understands classrooms, a counselor who can build tools, or simply someone who brings both — I'd love to connect.</p>
+    <div class="contact-links">
+      <a href="mailto:robincguerrero@gmail.com" class="contact-btn amber-btn">robincguerrero@gmail.com</a>
+      <a href="https://robinchristina.github.io" class="contact-btn" target="_blank">Portfolio</a>
+      <a href="img/Resume_2026_Web.pdf" class="contact-btn" target="_blank">Download résumé</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-copy">&copy; 2026 Robin Guerrero</span>
+  <span class="footer-name">Developer &amp; Educator</span>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.project-card, .timeline-item, .about-inner > div').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  observer.observe(el);
+});
+</script>
 </body>
 </html>
-

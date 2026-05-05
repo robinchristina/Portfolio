@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feelings Wheel — Robin Guerrero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&family=Nunito:wght@400;600;700&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --plum-deep: #3E2440; --plum-mid: #7A4A72; --plum-light: #C4A8C0;
+    --plum-wash: #F5EEF4; --amber: #D4924A; --parchment: #FAF6F0;
+    --ink: #2A1A28; --ink-mid: #5C3D58; --ink-light: #9A7A96;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--parchment); color: var(--ink); }
+
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(250,246,240,0.95);
+    border-bottom: 1px solid rgba(196,168,192,0.2);
+  }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; color: var(--plum-deep); text-decoration: none; }
+  .nav-back { font-size: 0.82rem; color: var(--ink-light); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+  .nav-back:hover { color: var(--amber); }
+
+  .page-header { padding: 3rem 3rem 1rem; text-align: center; }
+  .page-tag { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber); margin-bottom: 0.75rem; }
+  .page-title { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 500; color: var(--plum-deep); margin-bottom: 0.75rem; }
+  .page-sub { font-size: 0.95rem; color: var(--ink-light); font-weight: 300; max-width: 520px; margin: 0 auto; line-height: 1.7; }
+
+  .tool-wrap { padding: 1rem 1rem 4rem; max-width: 760px; margin: 0 auto; }
+
+  .feelings-app { font-family: 'Nunito Sans', sans-serif; padding: 1.5rem 1rem 2rem; }
+  .app-title { font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 700; color: var(--plum-deep); text-align: center; margin: 0 0 4px; }
+  .app-subtitle { font-size: 14px; color: var(--ink-light); text-align: center; margin: 0 0 1.5rem; }
+  .wheel-wrap { display: flex; justify-content: center; margin-bottom: 1.5rem; }
+  .wheel-svg { cursor: pointer; }
+  .wheel-slice { cursor: pointer; transition: opacity 0.15s; }
+  .wheel-slice:hover { opacity: 0.85; }
+  .wheel-slice.active { opacity: 1; }
+  .wheel-slice.dimmed { opacity: 0.3; }
+  .detail-panel { background: #fff; border: 1px solid rgba(196,168,192,0.3); border-radius: 8px; padding: 1.25rem 1.5rem; min-height: 140px; }
+  .detail-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 140px; gap: 8px; }
+  .detail-empty p { font-size: 14px; color: var(--ink-light); margin: 0; text-align: center; }
+  .detail-header { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; }
+  .detail-dot { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; }
+  .detail-feeling { font-family: 'Nunito', sans-serif; font-size: 20px; font-weight: 700; color: var(--plum-deep); margin: 0; }
+  .detail-core { font-size: 13px; color: var(--ink-light); margin: 0; }
+  .detail-section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-light); margin: 0 0 8px; }
+  .strategies-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
+  .strategy-pill { font-size: 13px; padding: 5px 12px; border-radius: 20px; border: 1px solid rgba(196,168,192,0.4); background: var(--plum-wash); color: var(--plum-mid); }
+  .body-check { font-size: 13px; color: var(--ink-light); font-style: italic; margin: 0; padding-top: 8px; border-top: 1px solid rgba(196,168,192,0.2); }
+  .legend { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px 20px; margin-top: 1rem; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-light); cursor: pointer; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  .about-tool { background: #fff; border-top: 1px solid rgba(196,168,192,0.2); padding: 3rem; }
+  .about-tool-inner { max-width: 760px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+  .about-tool h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--plum-deep); margin-bottom: 0.75rem; }
+  .about-tool p { font-size: 0.9rem; color: var(--ink-mid); font-weight: 300; line-height: 1.75; }
+  .tech-list { list-style: none; margin-top: 0.75rem; display: flex; flex-direction: column; gap: 6px; }
+  .tech-list li { font-size: 0.85rem; color: var(--ink-mid); display: flex; align-items: center; gap: 8px; }
+  .tech-list li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
+
+  footer { padding: 1.5rem 3rem; border-top: 1px solid rgba(196,168,192,0.2); display: flex; justify-content: space-between; }
+  .footer-copy { font-size: 0.78rem; color: var(--ink-light); }
+  .footer-name { font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; color: var(--plum-mid); }
+
+  @media (max-width: 600px) {
+    nav { padding: 1rem 1.5rem; }
+    .page-header { padding: 2rem 1.5rem 0.5rem; }
+    .about-tool-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+    .about-tool { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">Robin Guerrero</a>
+  <a class="nav-back" href="index.html">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 8H3M7 4L3 8l4 4"/></svg>
+    Back to portfolio
+  </a>
+</nav>
+
+<div class="page-header">
+  <p class="page-tag">SEL Tool · EdTech · JavaScript</p>
+  <h1 class="page-title">Interactive Feelings Wheel</h1>
+  <p class="page-sub">An emotion identification tool for K–5 students — built from counseling experience and brought to life through code.</p>
+</div>
+
+<div class="tool-wrap">
+  <div class="feelings-app">
+    <p class="app-title">How are you feeling?</p>
+    <p class="app-subtitle">Tap a feeling on the wheel to learn more about it</p>
+    <div class="wheel-wrap">
+      <svg class="wheel-svg" width="300" height="300" viewBox="-1 -1 302 302" id="wheel"></svg>
+    </div>
+    <div class="detail-panel" id="detail">
+      <div class="detail-empty">
+        <p>Tap any slice on the wheel<br>to explore that feeling</p>
+      </div>
+    </div>
+    <div class="legend" id="legend"></div>
+  </div>
+</div>
+
+<div class="about-tool">
+  <div class="about-tool-inner">
+    <div>
+      <h3>Why I built this</h3>
+      <p>During my five years as a school counselor, I used feelings wheels constantly — printed on paper, laminated, stuck to clipboards. They're one of the most effective tools in an elementary counselor's kit because they give kids language for experiences they can feel but can't name yet.</p>
+      <p style="margin-top:0.75rem;">I built this digital version to demonstrate what's possible when someone who has actually used these tools in a counseling session is also the person writing the code.</p>
+    </div>
+    <div>
+      <h3>How it was built</h3>
+      <p>Built entirely with vanilla JavaScript and SVG — no frameworks, no libraries. Each slice is rendered mathematically using polar coordinates, and the coping strategies are drawn from evidence-based SEL practices I used with real students.</p>
+      <ul class="tech-list">
+        <li>Vanilla JavaScript (ES6+)</li>
+        <li>SVG path rendering with polar coordinates</li>
+        <li>Evidence-based SEL coping strategies</li>
+        <li>Body-awareness language for K–5</li>
+        <li>CASEL-aligned emotion categories</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span class="footer-copy">&copy; 2026 Robin Guerrero</span>
+  <span class="footer-name">Developer &amp; Educator</span>
+</footer>
+
+<script>
+const FEELINGS = [
+  { core:"Happy", color:"#F5C842", textColor:"#7A5C00", emotions:[
+    {name:"Joyful",body:"Your heart might feel light and bouncy inside.",strategies:["Do a happy dance","Draw something you love","Share your joy with a friend"]},
+    {name:"Excited",body:"You might feel wiggly or like you have lots of energy.",strategies:["Take deep breaths","Jump or shake it out","Tell someone your good news"]},
+    {name:"Proud",body:"You might feel tall and strong inside.",strategies:["Celebrate your hard work","Write it down","Say 'I did it!'"]},
+    {name:"Grateful",body:"Your heart might feel warm and full.",strategies:["Thank someone","Write 3 good things","Give a hug"]},
+  ]},
+  { core:"Calm", color:"#7DD4B8", textColor:"#1A5C46", emotions:[
+    {name:"Peaceful",body:"Your body feels soft and easy, like floating.",strategies:["Sit quietly outside","Listen to soft music","Take slow breaths"]},
+    {name:"Relaxed",body:"Your muscles feel loose and heavy in a good way.",strategies:["Stretch your arms out wide","Close your eyes a moment","Yawn and breathe out"]},
+    {name:"Safe",body:"Your tummy feels settled and comfortable.",strategies:["Stay near someone you trust","Hold something soft","Name 5 things you can see"]},
+    {name:"Content",body:"You feel just right — not too much, not too little.",strategies:["Enjoy the quiet moment","Do something cozy","Simply notice how good this feels"]},
+  ]},
+  { core:"Sad", color:"#89B4E8", textColor:"#1A3E6E", emotions:[
+    {name:"Lonely",body:"Your chest might feel empty or hollow.",strategies:["Talk to someone you trust","Write or draw your feelings","Give yourself a hug"]},
+    {name:"Disappointed",body:"You might feel heavy or droopy.",strategies:["Take a big breath out","Name what you hoped for","Try again or try something new"]},
+    {name:"Hurt",body:"Your heart might feel sore or achy.",strategies:["Let yourself cry if you need to","Tell someone what happened","Be gentle with yourself"]},
+    {name:"Left out",body:"Your tummy might feel knotted or empty.",strategies:["Find a kind friend to sit with","Ask to join","Do something you enjoy alone"]},
+  ]},
+  { core:"Angry", color:"#F28B6E", textColor:"#7A2A10", emotions:[
+    {name:"Frustrated",body:"You might feel hot or tense in your hands and face.",strategies:["Squeeze something soft","Count to 10 slowly","Take 3 deep belly breaths"]},
+    {name:"Annoyed",body:"You might feel prickly or tight all over.",strategies:["Walk away for a moment","Tell someone calmly","Breathe out slowly like a balloon"]},
+    {name:"Mad",body:"You might feel hot, shaky, or want to yell.",strategies:["Stomp your feet outside","Draw your mad feeling out","Use your words when you're ready"]},
+    {name:"Jealous",body:"Your chest might feel tight or heavy.",strategies:["Notice what you do have","Tell someone how you feel","Celebrate someone else's good thing"]},
+  ]},
+  { core:"Scared", color:"#C49FD4", textColor:"#4A1E6E", emotions:[
+    {name:"Worried",body:"Your tummy might feel fluttery or tight.",strategies:["Name your worry out loud","Take 4 slow breaths","Ask a grown-up for help"]},
+    {name:"Nervous",body:"You might feel shaky or have a fast heartbeat.",strategies:["Squeeze and release your hands","Remind yourself you are safe","Talk to someone you trust"]},
+    {name:"Afraid",body:"Your whole body might feel frozen or want to run.",strategies:["Find a safe grown-up right away","Name 5 things you can see","Hold something comforting"]},
+    {name:"Shy",body:"You might feel small or want to hide a little.",strategies:["It's okay to take your time","Wave or smile first","Stay near someone familiar"]},
+  ]},
+  { core:"Surprised", color:"#F5A67A", textColor:"#7A3A10", emotions:[
+    {name:"Amazed",body:"Your eyes go wide and your mouth opens.",strategies:["Say 'wow!' out loud","Share what surprised you","Draw or describe what you saw"]},
+    {name:"Confused",body:"Your head might feel fuzzy or mixed up.",strategies:["Ask someone to explain","Say 'I don't understand yet'","Take it one small step at a time"]},
+    {name:"Curious",body:"You feel a pull toward something interesting.",strategies:["Ask a question","Explore and investigate","Look it up together"]},
+    {name:"Shocked",body:"Your body might freeze for a moment.",strategies:["Take a breath first","Sit down if you need to","Talk about what happened"]},
+  ]},
+];
+
+const cx=150,cy=150,outerR=148,innerR=62,TOTAL=FEELINGS.length,slice=(2*Math.PI)/TOTAL;
+const svg=document.getElementById('wheel');
+
+function polarToXY(cx,cy,r,a){return[cx+r*Math.cos(a),cy+r*Math.sin(a)];}
+function makeSlicePath(cx,cy,r1,r2,s,e){
+  const[x1,y1]=polarToXY(cx,cy,r2,s),[x2,y2]=polarToXY(cx,cy,r2,e);
+  const[x3,y3]=polarToXY(cx,cy,r1,e),[x4,y4]=polarToXY(cx,cy,r1,s);
+  const la=e-s>Math.PI?1:0;
+  return`M ${x1} ${y1} A ${r2} ${r2} 0 ${la} 1 ${x2} ${y2} L ${x3} ${y3} A ${r1} ${r1} 0 ${la} 0 ${x4} ${y4} Z`;
+}
+
+const offset=-Math.PI/2;
+const centerCircle=document.createElementNS('http://www.w3.org/2000/svg','circle');
+centerCircle.setAttribute('cx',cx);centerCircle.setAttribute('cy',cy);
+centerCircle.setAttribute('r',innerR-1);centerCircle.setAttribute('fill','#FAF6F0');
+centerCircle.setAttribute('stroke','rgba(196,168,192,0.3)');centerCircle.setAttribute('stroke-width','0.5');
+svg.appendChild(centerCircle);
+
+FEELINGS.forEach((feeling,fi)=>{
+  const coreStart=offset+fi*slice,coreEnd=coreStart+slice,subSlice=slice/feeling.emotions.length;
+  feeling.emotions.forEach((emotion,ei)=>{
+    const eStart=coreStart+ei*subSlice,eEnd=eStart+subSlice;
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('class','wheel-slice');g.dataset.core=fi;g.dataset.emotion=ei;
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',makeSlicePath(cx,cy,innerR+2,outerR,eStart+0.012,eEnd-0.012));
+    path.setAttribute('fill',feeling.color);path.setAttribute('opacity',0.7+(ei*0.075));
+    path.setAttribute('stroke','#FAF6F0');path.setAttribute('stroke-width','1.5');
+    const midA=(eStart+eEnd)/2,labelR=innerR+(outerR-innerR)*0.55;
+    const[lx,ly]=polarToXY(cx,cy,labelR,midA);
+    const text=document.createElementNS('http://www.w3.org/2000/svg','text');
+    text.setAttribute('x',lx);text.setAttribute('y',ly);text.setAttribute('text-anchor','middle');
+    text.setAttribute('dominant-baseline','middle');text.setAttribute('font-size','9');
+    text.setAttribute('font-family','Nunito Sans, sans-serif');text.setAttribute('font-weight','600');
+    text.setAttribute('fill',feeling.textColor);text.setAttribute('pointer-events','none');
+    text.textContent=emotion.name;
+    g.appendChild(path);g.appendChild(text);
+    g.addEventListener('click',()=>selectEmotion(fi,ei));
+    svg.appendChild(g);
+  });
+  const coreMid=coreStart+slice/2;
+  const[lx,ly]=polarToXY(cx,cy,innerR*0.62,coreMid);
+  const ct=document.createElementNS('http://www.w3.org/2000/svg','text');
+  ct.setAttribute('x',lx);ct.setAttribute('y',ly);ct.setAttribute('text-anchor','middle');
+  ct.setAttribute('dominant-baseline','middle');ct.setAttribute('font-size','10');
+  ct.setAttribute('font-family','Nunito, sans-serif');ct.setAttribute('font-weight','700');
+  ct.setAttribute('fill',feeling.textColor);ct.setAttribute('pointer-events','none');
+  ct.textContent=feeling.core;svg.appendChild(ct);
+});
+
+const centerEmoji=document.createElementNS('http://www.w3.org/2000/svg','text');
+centerEmoji.setAttribute('x',cx);centerEmoji.setAttribute('y',cy+4);
+centerEmoji.setAttribute('text-anchor','middle');centerEmoji.setAttribute('dominant-baseline','middle');
+centerEmoji.setAttribute('font-size','28');centerEmoji.textContent='☀';
+svg.appendChild(centerEmoji);
+
+const legend=document.getElementById('legend');
+FEELINGS.forEach((f,fi)=>{
+  const item=document.createElement('div');item.className='legend-item';
+  item.innerHTML=`<div class="legend-dot" style="background:${f.color}"></div><span>${f.core}</span>`;
+  item.addEventListener('click',()=>selectEmotion(fi,0));legend.appendChild(item);
+});
+
+function selectEmotion(fi,ei){
+  const feeling=FEELINGS[fi],emotion=feeling.emotions[ei];
+  document.querySelectorAll('.wheel-slice').forEach(el=>{
+    el.classList.remove('active','dimmed');
+    (parseInt(el.dataset.core)===fi&&parseInt(el.dataset.emotion)===ei)?el.classList.add('active'):el.classList.add('dimmed');
+  });
+  centerEmoji.textContent=['☀','🌿','🌧','🔥','🌙','✨'][fi];
+  document.getElementById('detail').innerHTML=`
+    <div class="detail-header">
+      <div class="detail-dot" style="background:${feeling.color}"></div>
+      <div><p class="detail-feeling">${emotion.name}</p><p class="detail-core">A ${feeling.core.toLowerCase()} feeling</p></div>
+    </div>
+    <p class="detail-section-label">Ways to feel better</p>
+    <div class="strategies-grid">${emotion.strategies.map(s=>`<span class="strategy-pill">${s}</span>`).join('')}</div>
+    <p class="body-check">Notice in your body: ${emotion.body}</p>`;
+}
+</script>
+</body>
+</html>
