@@ -56,6 +56,21 @@
     pointer-events: none;
   }
 
+  .piece-preview-link { text-decoration: none; transition: border-color 0.2s, transform 0.2s; }
+  .piece-preview-link:hover { border-color: var(--plum-mid); transform: translateY(-2px); }
+
+  .placeholder-badge {
+    margin-top: 1rem;
+    display: inline-block;
+    padding: 0.45rem 1.1rem;
+    background: var(--plum-deep);
+    color: var(--plum-wash);
+    border-radius: 3px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
   .piece-preview-placeholder {
     width: 100%; display: flex; flex-direction: column;
     align-items: center; justify-content: center; gap: 12px;
@@ -147,12 +162,16 @@
 
   <!-- PIECE 1 -->
   <div class="piece">
-    <div class="piece-preview">
-      <iframe
-        src="5_Steps_to_Helping_Your_Child_Solve_Conflicts.pdf"
-        title="5 Steps to Helping Your Child Solve Conflicts">
-      </iframe>
-    </div>
+    <a class="piece-preview piece-preview-link" href="5_Steps_to_Helping_Your_Child_Solve_Conflicts.pdf" target="_blank" aria-label="Open PDF in new tab">
+      <div class="piece-preview-placeholder">
+        <div class="placeholder-icon">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <p class="placeholder-title">5 Steps to Helping Your Child Solve Conflicts</p>
+        <p class="placeholder-sub">Click to open PDF</p>
+        <div class="placeholder-badge">View PDF &rarr;</div>
+      </div>
+    </a>
     <div class="piece-info">
       <p class="piece-tag">Parent resource · Conflict resolution</p>
       <h2 class="piece-title">5 Steps to Helping Your Child Solve Conflicts</h2>
