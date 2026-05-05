@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Work — Robin Guerrero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --plum-deep: #3E2440; --plum-mid: #7A4A72; --plum-light: #C4A8C0;
+    --plum-wash: #F5EEF4; --amber: #D4924A; --amber-wash: #FAF3E8;
+    --parchment: #FAF6F0; --ink: #2A1A28; --ink-mid: #5C3D58; --ink-light: #9A7A96;
+    --white: #FFFFFF;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--parchment); color: var(--ink); line-height: 1.7; }
+
+  nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(250,246,240,0.95);
+    border-bottom: 1px solid rgba(196,168,192,0.2);
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; color: var(--plum-deep); text-decoration: none; }
+  .nav-back { font-size: 0.82rem; color: var(--ink-light); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+  .nav-back:hover { color: var(--amber); }
+
+  .page-header { padding: 4rem 3rem 2rem; max-width: 860px; margin: 0 auto; }
+  .page-tag { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 10px; }
+  .page-tag::before { content: ''; display: block; width: 20px; height: 1px; background: var(--amber); }
+  .page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 500; color: var(--plum-deep); margin-bottom: 1rem; line-height: 1.15; }
+  .page-sub { font-size: 1rem; color: var(--ink-mid); font-weight: 300; max-width: 600px; line-height: 1.75; }
+
+  .pieces-wrap { padding: 1rem 3rem 5rem; max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 4rem; }
+
+  .piece { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+  .piece.reverse { direction: rtl; }
+  .piece.reverse > * { direction: ltr; }
+
+  .piece-preview {
+    background: var(--white);
+    border: 1px solid rgba(196,168,192,0.25);
+    border-radius: 6px;
+    overflow: hidden;
+    aspect-ratio: 3/4;
+    display: flex; align-items: stretch;
+  }
+
+  .piece-preview iframe {
+    width: 100%; height: 100%; border: none;
+    pointer-events: none;
+  }
+
+  .piece-preview-placeholder {
+    width: 100%; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 12px;
+    background: var(--plum-wash);
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .placeholder-icon {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: rgba(122,74,114,0.15);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .placeholder-icon svg { width: 24px; height: 24px; stroke: var(--plum-mid); fill: none; stroke-width: 1.5; }
+
+  .placeholder-title { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--plum-deep); }
+  .placeholder-sub { font-size: 0.82rem; color: var(--ink-light); }
+
+  .piece-info { padding-top: 0.5rem; }
+  .piece-tag { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); margin-bottom: 0.5rem; }
+  .piece-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; color: var(--plum-deep); line-height: 1.2; margin-bottom: 0.75rem; }
+  .piece-desc { font-size: 0.9rem; color: var(--ink-mid); font-weight: 300; line-height: 1.75; margin-bottom: 1.5rem; }
+
+  .piece-meta { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.75rem; }
+  .piece-meta-row { display: flex; gap: 10px; align-items: baseline; }
+  .meta-label { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-light); min-width: 70px; }
+  .meta-value { font-size: 0.85rem; color: var(--ink-mid); }
+
+  .piece-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 0.75rem 1.5rem;
+    background: var(--plum-deep);
+    color: var(--plum-wash);
+    border-radius: 3px;
+    font-size: 0.82rem; font-weight: 500; letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .piece-cta:hover { background: var(--plum-mid); transform: translateY(-1px); }
+  .piece-cta svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+
+  .divider { height: 1px; background: rgba(196,168,192,0.2); }
+
+  .add-more {
+    background: var(--white);
+    border: 1.5px dashed rgba(196,168,192,0.4);
+    border-radius: 6px;
+    padding: 2.5rem;
+    text-align: center;
+  }
+  .add-more p { font-size: 0.9rem; color: var(--ink-light); font-weight: 300; margin-bottom: 0.5rem; }
+  .add-more span { font-size: 0.8rem; color: var(--plum-light); font-style: italic; }
+
+  footer {
+    padding: 1.5rem 3rem; border-top: 1px solid rgba(196,168,192,0.2);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-copy { font-size: 0.78rem; color: var(--ink-light); }
+  .footer-name { font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; color: var(--plum-mid); }
+
+  @media (max-width: 700px) {
+    nav { padding: 1rem 1.5rem; }
+    .page-header { padding: 2.5rem 1.5rem 1.5rem; }
+    .pieces-wrap { padding: 1rem 1.5rem 3rem; gap: 3rem; }
+    .piece { grid-template-columns: 1fr; gap: 1.5rem; }
+    .piece.reverse { direction: ltr; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">Robin Guerrero</a>
+  <a class="nav-back" href="index.html">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 8H3M7 4L3 8l4 4"/></svg>
+    Back to portfolio
+  </a>
+</nav>
+
+<div class="page-header">
+  <p class="page-tag">Design · Canva · Photoshop</p>
+  <h1 class="page-title">Educational graphic design</h1>
+  <p class="page-sub">A collection of parent-facing resources and classroom materials created during five years as a school counselor — designed to be warm, clear, and easy to act on.</p>
+</div>
+
+<div class="pieces-wrap">
+
+  <!-- PIECE 1 -->
+  <div class="piece">
+    <div class="piece-preview">
+      <iframe
+        src="5_Steps_to_Helping_Your_Child_Solve_Conflicts.pdf"
+        title="5 Steps to Helping Your Child Solve Conflicts">
+      </iframe>
+    </div>
+    <div class="piece-info">
+      <p class="piece-tag">Parent resource · Conflict resolution</p>
+      <h2 class="piece-title">5 Steps to Helping Your Child Solve Conflicts</h2>
+      <p class="piece-desc">A parent-facing guide to supporting children through conflict at home. Written in warm, non-clinical language that meets parents where they are — covering emotional identification, de-escalation, child-led problem solving, I-statements, and reflective parenting.</p>
+      <div class="piece-meta">
+        <div class="piece-meta-row">
+          <span class="meta-label">Audience</span>
+          <span class="meta-value">Parents & caregivers</span>
+        </div>
+        <div class="piece-meta-row">
+          <span class="meta-label">Age range</span>
+          <span class="meta-value">Elementary (K–5)</span>
+        </div>
+        <div class="piece-meta-row">
+          <span class="meta-label">Topics</span>
+          <span class="meta-value">Conflict resolution, emotion regulation, I-statements</span>
+        </div>
+      </div>
+      <a class="piece-cta" href="5_Steps_to_Helping_Your_Child_Solve_Conflicts.pdf" target="_blank">
+        View PDF
+        <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PLACEHOLDER FOR MORE PIECES -->
+  <div class="add-more">
+    <p>More design pieces coming soon.</p>
+    <span>Parent newsletters, SEL infographics, and classroom visuals</span>
+  </div>
+
+</div>
+
+<footer>
+  <span class="footer-copy">&copy; 2026 Robin Guerrero</span>
+  <span class="footer-name">Developer &amp; Educator</span>
+</footer>
+
+</body>
+</html>
