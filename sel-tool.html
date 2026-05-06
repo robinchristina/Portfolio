@@ -98,7 +98,7 @@
     <p class="app-title">How are you feeling?</p>
     <p class="app-subtitle">Tap a feeling on the wheel to learn more about it</p>
     <div class="wheel-wrap">
-      <svg class="wheel-svg" width="300" height="300" viewBox="-1 -1 302 302" id="wheel"></svg>
+      <svg class="wheel-svg" width="500" height="500" viewBox="-1 -1 302 302" id="wheel"></svg>
     </div>
     <div class="detail-panel" id="detail">
       <div class="detail-empty">
@@ -207,7 +207,7 @@ FEELINGS.forEach((feeling,fi)=>{
     const[lx,ly]=polarToXY(cx,cy,labelR,midA);
     const text=document.createElementNS('http://www.w3.org/2000/svg','text');
     text.setAttribute('x',lx);text.setAttribute('y',ly);text.setAttribute('text-anchor','middle');
-    text.setAttribute('dominant-baseline','middle');text.setAttribute('font-size','9');
+    text.setAttribute('dominant-baseline','middle');text.setAttribute('font-size','7');
     text.setAttribute('font-family','Nunito Sans, sans-serif');text.setAttribute('font-weight','600');
     text.setAttribute('fill',feeling.textColor);text.setAttribute('pointer-events','none');
     text.textContent=emotion.name;
@@ -219,7 +219,7 @@ FEELINGS.forEach((feeling,fi)=>{
   const[lx,ly]=polarToXY(cx,cy,innerR*0.62,coreMid);
   const ct=document.createElementNS('http://www.w3.org/2000/svg','text');
   ct.setAttribute('x',lx);ct.setAttribute('y',ly);ct.setAttribute('text-anchor','middle');
-  ct.setAttribute('dominant-baseline','middle');ct.setAttribute('font-size','10');
+  ct.setAttribute('dominant-baseline','middle');ct.setAttribute('font-size','8');
   ct.setAttribute('font-family','Nunito, sans-serif');ct.setAttribute('font-weight','700');
   ct.setAttribute('fill',feeling.textColor);ct.setAttribute('pointer-events','none');
   ct.textContent=feeling.core;svg.appendChild(ct);
