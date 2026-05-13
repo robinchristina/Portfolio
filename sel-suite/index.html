@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#3E2440">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SEL Tools">
+<meta name="description" content="Social-emotional learning tools for students — Feelings Wheel, Mood Meter, and Breathing Exercises.">
+<title>SEL Tools</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --plum-deep: #3E2440;
+  --plum-light: #C4A8C0;
+  --parchment: #FAF6F0;
+  --ink: #2A1A28;
+  --ink-mid: #5C3D58;
+  --ink-light: #9A7A96;
+  --border: rgba(196,168,192,0.25);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  font-family: 'Nunito', sans-serif;
+  background: var(--parchment);
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+}
+.app-header {
+  background: var(--plum-deep);
+  padding: 14px 20px;
+  flex-shrink: 0;
+}
+.header-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--plum-light);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.header-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #fff;
+}
+.app-body {
+  flex: 1;
+  padding: 24px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.hero {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.hero-q {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+.hero-sub {
+  font-size: 0.85rem;
+  color: var(--ink-light);
+  font-family: 'Nunito Sans', sans-serif;
+}
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+.tool-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.12s, box-shadow 0.12s;
+  -webkit-tap-highlight-color: transparent;
+}
+.tool-card:active { transform: scale(0.98); }
+.tool-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+.tool-body { flex: 1; min-width: 0; }
+.tool-name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+.tool-desc {
+  font-size: 0.78rem;
+  color: var(--ink-light);
+  line-height: 1.4;
+  font-family: 'Nunito Sans', sans-serif;
+}
+.tool-arrow {
+  color: var(--ink-light);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.footer {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--ink-light);
+  font-family: 'Nunito Sans', sans-serif;
+  line-height: 1.6;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+}
+.install-banner {
+  display: none;
+  background: var(--plum-deep);
+  border-radius: 12px;
+  padding: 14px 16px;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.install-banner.visible { display: flex; }
+.install-text { flex: 1; }
+.install-text p { font-size: 13px; color: var(--plum-light); line-height: 1.4; }
+.install-text strong { color: #fff; font-weight: 700; }
+.install-btn {
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  background: #D4924A;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.install-dismiss {
+  background: none;
+  border: none;
+  color: var(--plum-light);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.offline-bar { display: none; background: #7A2A10; color: #fff; font-size: 12px; text-align: center; padding: 6px; }
+.educator-btn{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:20px;padding:11px 16px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,0.6);font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;color:var(--ink-mid);cursor:pointer;text-decoration:none;transition:background .12s;}
+.educator-btn:active{background:var(--plum-wash);}
+.edu-panel{display:none;margin-top:12px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 18px;animation:fadeIn .2s ease;}
+.edu-panel.open{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+.edu-title{font-size:.82rem;font-weight:800;color:var(--ink);margin-bottom:4px;}
+.edu-desc{font-size:.75rem;color:var(--ink-light);line-height:1.5;margin-bottom:12px;font-family:'Nunito Sans',sans-serif;}
+.edu-links{display:flex;flex-direction:column;gap:8px;}
+.edu-link{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;border:1px solid var(--border);background:var(--plum-wash);text-decoration:none;transition:background .12s;}
+.edu-link:active{background:var(--plum-light);}
+.edu-link-icon{font-size:1.2rem;flex-shrink:0;}
+.edu-link-body{flex:1;}
+.edu-link-name{font-size:.82rem;font-weight:800;color:var(--ink);margin-bottom:1px;}
+.edu-link-desc{font-size:.7rem;color:var(--ink-light);font-family:'Nunito Sans',sans-serif;}
+.edu-link-dl{font-size:.72rem;font-weight:700;color:var(--ink-mid);flex-shrink:0;}
+body.offline .offline-bar { display: block; }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <div class="offline-bar">You're offline — the app still works!</div>
+  <header class="app-header">
+    <p class="header-eyebrow">SEL Tools · Robin Guerrero</p>
+    <p class="header-title">Student Check-In Suite</p>
+    <a href="../index.html" style="display:inline-block;margin-top:8px;font-size:.75rem;color:var(--plum-light);font-family:'Nunito Sans',sans-serif;text-decoration:none;">&#8592; Back to portfolio</a>
+  </header>
+  <div class="app-body">
+    <div class="install-banner" id="installBanner">
+      <div class="install-text"><p><strong>Add to your home screen</strong><br>Use offline, anytime.</p></div>
+      <button class="install-btn" id="installBtn">Install</button>
+      <button class="install-dismiss" id="dismissBtn" aria-label="Dismiss">&#215;</button>
+    </div>
+    <div class="hero">
+      <p class="hero-q">How are you doing?</p>
+      <p class="hero-sub">Choose a tool to check in with yourself</p>
+    </div>
+    <div class="cards">
+      <a class="tool-card" href="feelings-wheel/index.html">
+        <div class="tool-icon" style="background:#FFF3CC">☀️</div>
+        <div class="tool-body">
+          <p class="tool-name">Feelings Wheel</p>
+          <p class="tool-desc">Name what you're feeling and find ways to cope — great for K–5</p>
+        </div>
+        <span class="tool-arrow">›</span>
+      </a>
+      <a class="tool-card" href="mood-meter/index.html">
+        <div class="tool-icon" style="background:#E1F5EE">
+          <span style="font-size:1.5rem">🎨</span>
+        </div>
+        <div class="tool-body">
+          <p class="tool-name">Mood Meter</p>
+          <p class="tool-desc">Plot your energy and mood on the Yale Mood Meter — for grades 4–8</p>
+        </div>
+        <span class="tool-arrow">›</span>
+      </a>
+      <a class="tool-card" href="breathing/index.html">
+        <div class="tool-icon" style="background:#E6F1FB">
+          <span style="font-size:1.5rem">🌬️</span>
+        </div>
+        <div class="tool-body">
+          <p class="tool-name">Breathing Exercises</p>
+          <p class="tool-desc">Box breathing or balloon breathing to calm your mind and body</p>
+        </div>
+        <span class="tool-arrow">›</span>
+      </a>
+    </div>
+
+    <button class="educator-btn" onclick="document.getElementById('eduPanel').classList.toggle('open')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      For educators
+    </button>
+    <div class="edu-panel" id="eduPanel">
+      <p class="edu-title">Printable Trackers</p>
+      <p class="edu-desc">Use these one-page forms to record student check-ins, document observations, and track outcomes over time. One student per sheet, four sessions per page.</p>
+      <div class="edu-links">
+        <a class="edu-link" href="feelings-wheel-tracker.pdf" download>
+          <span class="edu-link-icon">☀️</span>
+          <div class="edu-link-body">
+            <p class="edu-link-name">Feelings Wheel Tracker</p>
+            <p class="edu-link-desc">Feeling · Sub-feeling · Body check · Notes · Actionable steps</p>
+          </div>
+          <span class="edu-link-dl">↓ PDF</span>
+        </a>
+        <a class="edu-link" href="mood-meter-tracker.pdf" download>
+          <span class="edu-link-icon">🎨</span>
+          <div class="edu-link-body">
+            <p class="edu-link-name">Mood Meter Tracker</p>
+            <p class="edu-link-desc">Zone · Emotion word · Energy · Reflection · Actionable steps</p>
+          </div>
+          <span class="edu-link-dl">↓ PDF</span>
+        </a>
+      </div>
+    </div>
+    <div class="footer">
+      Created by Robin Guerrero · School Counselor<br>
+      Based on RULER and SEL research frameworks
+    </div>
+  </div>
+</div>
+<script>
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+function updateOnline() { document.body.classList.toggle('offline', !navigator.onLine); }
+window.addEventListener('online', updateOnline);
+window.addEventListener('offline', updateOnline);
+updateOnline();
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; document.getElementById('installBanner').classList.add('visible'); });
+document.getElementById('installBtn').addEventListener('click', async () => { if (!deferredPrompt) return; deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; document.getElementById('installBanner').classList.remove('visible'); });
+document.getElementById('dismissBtn').addEventListener('click', () => document.getElementById('installBanner').classList.remove('visible'));
+window.addEventListener('appinstalled', () => document.getElementById('installBanner').classList.remove('visible'));
+</script>
+</body>
+</html>

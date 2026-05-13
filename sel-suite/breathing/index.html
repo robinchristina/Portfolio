@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#185FA5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Breathing Exercises">
+<meta name="description" content="Box breathing and balloon breathing exercises for students.">
+<title>Breathing Exercises</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue-deep: #185FA5;
+  --blue-light: #E6F1FB;
+  --blue-mid: #4A7DB0;
+  --parchment: #F8F7F4;
+  --ink: #1C1C1E;
+  --ink-mid: #4A4A52;
+  --ink-light: #8A8A96;
+  --border: rgba(0,0,0,0.09);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%;
+  font-family: 'Nunito', sans-serif;
+  background: var(--parchment);
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+.app-shell { display: flex; flex-direction: column; min-height: 100dvh; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
+.app-header { background: var(--blue-deep); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.header-logo { font-size: 1rem; font-weight: 700; color: var(--blue-light); }
+.home-btn { background: none; border: none; color: var(--blue-light); font-family: 'Nunito', sans-serif; font-size: .85rem; font-weight: 600; cursor: pointer; padding: 4px 0; display: flex; align-items: center; gap: 5px; text-decoration: none; opacity: .85; }
+.back-btn { display: none; align-items: center; gap: 6px; background: none; border: none; color: var(--blue-light); font-family: 'Nunito', sans-serif; font-size: .9rem; font-weight: 600; cursor: pointer; padding: 4px 0; }
+.back-btn.visible { display: flex; }
+
+.screen { display: none; flex-direction: column; flex: 1; padding: 24px 20px 32px; animation: fadeUp .2s ease; }
+.screen.active { display: flex; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Pick screen */
+.pick-question { font-size: 1.2rem; font-weight: 800; color: var(--ink); text-align: center; margin-bottom: 6px; line-height: 1.4; }
+.pick-hint { font-size: .82rem; color: var(--ink-light); text-align: center; margin-bottom: 22px; font-family: 'Nunito Sans', sans-serif; }
+.pick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pick-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 20px 14px; display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; transition: transform .12s; text-align: center; }
+.pick-card:active { transform: scale(0.97); background: var(--blue-light); }
+.pick-icon { font-size: 2.2rem; line-height: 1; }
+.pick-name { font-size: .95rem; font-weight: 800; color: var(--ink); }
+.pick-desc { font-size: .72rem; color: var(--ink-light); line-height: 1.4; font-family: 'Nunito Sans', sans-serif; }
+
+/* Exercise screens */
+.ex-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.ex-title { font-size: 1rem; font-weight: 800; color: var(--ink); }
+.phase-label { font-size: 1.4rem; font-weight: 700; color: var(--ink); text-align: center; margin-bottom: 4px; min-height: 34px; }
+.count-label { font-size: 3rem; font-weight: 700; color: var(--ink-light); text-align: center; margin-bottom: 6px; min-height: 56px; line-height: 1; }
+.round-label { font-size: .8rem; color: var(--ink-light); text-align: center; margin-bottom: 20px; font-family: 'Nunito Sans', sans-serif; }
+.anim-wrap { display: flex; justify-content: center; margin-bottom: 24px; }
+.ctrl-row { display: flex; gap: 10px; justify-content: center; }
+.ctrl-btn { padding: 11px 24px; border-radius: 10px; border: 1px solid var(--border); background: #fff; font-family: 'Nunito', sans-serif; font-size: .9rem; font-weight: 700; color: var(--ink); cursor: pointer; transition: background .12s; }
+.ctrl-btn.primary { background: var(--blue-deep); border-color: var(--blue-deep); color: #fff; }
+.ctrl-btn:active { opacity: .85; }
+
+/* Done screen */
+.done-wrap { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 16px 0 0; flex: 1; }
+.done-icon { font-size: 3rem; margin-bottom: 14px; }
+.done-title { font-size: 1.3rem; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
+.done-sub { font-size: .88rem; color: var(--ink-light); line-height: 1.6; margin-bottom: 24px; font-family: 'Nunito Sans', sans-serif; max-width: 280px; }
+.done-links { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-bottom: 16px; }
+.done-link { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border); background: #fff; font-size: .9rem; font-weight: 700; color: var(--ink); text-decoration: none; transition: background .12s; }
+.done-link:active { background: var(--blue-light); }
+.done-link-icon { font-size: 1.2rem; }
+.done-again { background: none; border: none; font-family: 'Nunito', sans-serif; font-size: .82rem; color: var(--ink-light); cursor: pointer; margin-top: 4px; }
+
+.offline-bar { display: none; background: #7A2A10; color: #fff; font-size: 12px; text-align: center; padding: 6px; flex-shrink: 0; }
+body.offline .offline-bar { display: block; }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <div class="offline-bar">You're offline — the app still works!</div>
+  <header class="app-header">
+    <a class="home-btn" href="../index.html">&#8962; Home</a>
+    <span class="header-logo">Breathing Exercises</span>
+    <button class="back-btn" id="backBtn" aria-label="Go back">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 8H3M7 4L3 8l4 4"/></svg>
+      Back
+    </button>
+  </header>
+
+  <!-- Screen: Pick -->
+  <div class="screen active" id="sPick">
+    <p class="pick-question">Let's slow down together</p>
+    <p class="pick-hint">Choose a breathing exercise</p>
+    <div class="pick-grid">
+      <div class="pick-card" onclick="startBox()">
+        <span class="pick-icon" aria-hidden="true">⬛</span>
+        <span class="pick-name">Box breathing</span>
+        <span class="pick-desc">4 counts in, hold, out, hold — steady and grounding</span>
+      </div>
+      <div class="pick-card" onclick="startBalloon()">
+        <span class="pick-icon" aria-hidden="true">🎈</span>
+        <span class="pick-name">Balloon breathing</span>
+        <span class="pick-desc">Breathe in to fill the balloon, out to let it go</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen: Box breathing -->
+  <div class="screen" id="sBox">
+    <div class="ex-header">
+      <button class="back-btn visible" onclick="goTo('sPick'); stopAll()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 8H3M7 4L3 8l4 4"/></svg>
+        Back
+      </button>
+      <span class="ex-title">Box breathing</span>
+      <span style="width:56px"></span>
+    </div>
+    <div class="phase-label" id="boxPhase">Ready</div>
+    <div class="count-label" id="boxCount">4</div>
+    <div class="round-label" id="boxRound">Round 1 of 4</div>
+    <div class="anim-wrap">
+      <svg id="boxSvg" width="180" height="180" viewBox="0 0 180 180" aria-hidden="true">
+        <rect x="20" y="20" width="140" height="140" rx="12" fill="none" stroke="rgba(0,0,0,0.08)" stroke-width="2"/>
+        <rect id="boxFill" x="20" y="20" width="0" height="0" rx="12" fill="#B5D4F4" opacity="0.5"/>
+        <rect id="boxOutline" x="20" y="20" width="140" height="140" rx="12" fill="none" stroke="#378ADD" stroke-width="3" stroke-dasharray="560" stroke-dashoffset="560"/>
+      </svg>
+    </div>
+    <div class="ctrl-row">
+      <button class="ctrl-btn primary" id="boxStartBtn" onclick="toggleBox()">Start</button>
+      <button class="ctrl-btn" onclick="goTo('sPick'); stopAll()">Change</button>
+    </div>
+  </div>
+
+  <!-- Screen: Balloon breathing -->
+  <div class="screen" id="sBalloon">
+    <div class="ex-header">
+      <button class="back-btn visible" onclick="goTo('sPick'); stopAll()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 8H3M7 4L3 8l4 4"/></svg>
+        Back
+      </button>
+      <span class="ex-title">Balloon breathing</span>
+      <span style="width:56px"></span>
+    </div>
+    <div class="phase-label" id="balPhase">Ready</div>
+    <div class="count-label" id="balCount">&nbsp;</div>
+    <div class="round-label" id="balRound">Round 1 of 5</div>
+    <div class="anim-wrap">
+      <svg id="balSvg" width="180" height="220" viewBox="0 0 180 220" aria-hidden="true">
+        <ellipse id="balloon" cx="90" cy="95" rx="30" ry="34" fill="#C5D9F2" stroke="#4A7DB0" stroke-width="2"/>
+        <line id="balString" x1="90" y1="129" x2="90" y2="190" stroke="#B4B2A9" stroke-width="1.5" stroke-linecap="round"/>
+        <path id="balKnot" d="M88 130 Q90 136 92 130" fill="none" stroke="#4A7DB0" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <div class="ctrl-row">
+      <button class="ctrl-btn primary" id="balStartBtn" onclick="toggleBalloon()">Start</button>
+      <button class="ctrl-btn" onclick="goTo('sPick'); stopAll()">Change</button>
+    </div>
+  </div>
+
+  <!-- Screen: Done -->
+  <div class="screen" id="sDone">
+    <div class="done-wrap">
+      <div class="done-icon" aria-hidden="true">✨</div>
+      <p class="done-title">Nice work</p>
+      <p class="done-sub">You just took a moment to slow down and breathe. How are you feeling now?</p>
+      <div class="done-links">
+        <a class="done-link" href="../feelings-wheel/index.html">
+          <span class="done-link-icon">☀️</span> Check in with the Feelings Wheel
+        </a>
+        <a class="done-link" href="../mood-meter/index.html">
+          <span class="done-link-icon">🎨</span> Check in with the Mood Meter
+        </a>
+      </div>
+      <button class="done-again" onclick="goTo('sPick'); stopAll()">Go again ↺</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+let ticker = null;
+function stopAll() {
+  clearInterval(ticker); ticker = null;
+  boxRunning = false; balRunning = false;
+  document.getElementById('boxStartBtn').textContent = 'Start';
+  document.getElementById('balStartBtn').textContent = 'Start';
+  resetBoxVisual(); resetBalloon();
+  document.getElementById('boxPhase').textContent = 'Ready';
+  document.getElementById('boxCount').textContent = '4';
+  document.getElementById('boxRound').textContent = 'Round 1 of 4';
+  document.getElementById('balPhase').textContent = 'Ready';
+  document.getElementById('balCount').textContent = '\u00a0';
+  document.getElementById('balRound').textContent = 'Round 1 of 5';
+  boxPhaseIdx = 0; boxSecLeft = 4; boxRound = 1;
+  balPhaseIn = true; balSecLeft = 4; balRound = 1;
+}
+
+function startBox() { goTo('sBox'); stopAll(); }
+function startBalloon() { goTo('sBalloon'); stopAll(); }
+
+/* ── BOX BREATHING ── */
+const BOX_PHASES = [
+  { label:'Inhale', dur:4 },
+  { label:'Hold',   dur:4 },
+  { label:'Exhale', dur:4 },
+  { label:'Hold',   dur:4 }
+];
+const BOX_TOTAL = 4;
+let boxRunning = false, boxPhaseIdx = 0, boxSecLeft = 4, boxRound = 1;
+
+function resetBoxVisual() {
+  document.getElementById('boxFill').setAttribute('width', '0');
+  document.getElementById('boxFill').setAttribute('height', '0');
+  document.getElementById('boxOutline').setAttribute('stroke-dashoffset', '560');
+}
+
+function setBoxProgress(pi, progress) {
+  const outline = document.getElementById('boxOutline');
+  const fill = document.getElementById('boxFill');
+  const total = 560, perPhase = 140;
+  outline.setAttribute('stroke-dashoffset', Math.max(0, total - (pi * perPhase + progress * perPhase)).toFixed(1));
+  if (pi === 0) { fill.setAttribute('x','20'); fill.setAttribute('y', (20 + 140*(1-progress)).toFixed(1)); fill.setAttribute('width','140'); fill.setAttribute('height', (140*progress).toFixed(1)); }
+  else if (pi === 1) { fill.setAttribute('x','20'); fill.setAttribute('y','20'); fill.setAttribute('width','140'); fill.setAttribute('height','140'); }
+  else if (pi === 2) { fill.setAttribute('x','20'); fill.setAttribute('y','20'); fill.setAttribute('width','140'); fill.setAttribute('height', (140*(1-progress)).toFixed(1)); }
+  else { fill.setAttribute('width','0'); fill.setAttribute('height','0'); }
+}
+
+function toggleBox() {
+  if (boxRunning) { boxRunning = false; clearInterval(ticker); document.getElementById('boxStartBtn').textContent = 'Resume'; return; }
+  boxRunning = true; document.getElementById('boxStartBtn').textContent = 'Pause';
+  ticker = setInterval(boxTick, 1000);
+}
+
+function boxTick() {
+  if (!boxRunning) return;
+  const phase = BOX_PHASES[boxPhaseIdx];
+  document.getElementById('boxPhase').textContent = phase.label + '…';
+  document.getElementById('boxCount').textContent = boxSecLeft;
+  setBoxProgress(boxPhaseIdx, Math.min(1, 1 - (boxSecLeft - 1) / phase.dur));
+  boxSecLeft--;
+  if (boxSecLeft < 1) {
+    boxPhaseIdx++;
+    if (boxPhaseIdx >= BOX_PHASES.length) {
+      boxPhaseIdx = 0; boxRound++;
+      if (boxRound > BOX_TOTAL) { clearInterval(ticker); boxRunning = false; setTimeout(() => goTo('sDone'), 600); return; }
+      document.getElementById('boxRound').textContent = 'Round ' + boxRound + ' of ' + BOX_TOTAL;
+    }
+    boxSecLeft = BOX_PHASES[boxPhaseIdx].dur;
+  }
+}
+
+/* ── BALLOON BREATHING ── */
+const BAL_TOTAL = 5, BAL_IN = 4, BAL_OUT = 6;
+let balRunning = false, balPhaseIn = true, balSecLeft = BAL_IN, balRound = 1;
+
+function setBalloonSize(p) {
+  const rx = (30 + 32 * p).toFixed(1);
+  const ry = (34 + 38 * p).toFixed(1);
+  const cy = (95 - 20 * p).toFixed(1);
+  const sy = (parseFloat(cy) + parseFloat(ry)).toFixed(1);
+  document.getElementById('balloon').setAttribute('rx', rx);
+  document.getElementById('balloon').setAttribute('ry', ry);
+  document.getElementById('balloon').setAttribute('cy', cy);
+  document.getElementById('balString').setAttribute('y1', sy);
+  document.getElementById('balKnot').setAttribute('d', `M88 ${sy} Q90 ${parseFloat(sy)+6} 92 ${sy}`);
+}
+
+function resetBalloon() { setBalloonSize(0); }
+
+function toggleBalloon() {
+  if (balRunning) { balRunning = false; clearInterval(ticker); document.getElementById('balStartBtn').textContent = 'Resume'; return; }
+  balRunning = true; balPhaseIn = true; balSecLeft = BAL_IN;
+  document.getElementById('balStartBtn').textContent = 'Pause';
+  ticker = setInterval(balTick, 1000);
+}
+
+function balTick() {
+  if (!balRunning) return;
+  const dur = balPhaseIn ? BAL_IN : BAL_OUT;
+  const p = balPhaseIn ? (1 - (balSecLeft - 1) / dur) : ((balSecLeft - 1) / dur);
+  setBalloonSize(Math.max(0, Math.min(1, p)));
+  document.getElementById('balPhase').textContent = balPhaseIn ? 'Breathe in…' : 'Breathe out…';
+  document.getElementById('balCount').textContent = balSecLeft;
+  balSecLeft--;
+  if (balSecLeft < 1) {
+    balPhaseIn = !balPhaseIn;
+    if (balPhaseIn) {
+      balRound++;
+      if (balRound > BAL_TOTAL) { clearInterval(ticker); balRunning = false; setTimeout(() => goTo('sDone'), 600); return; }
+      document.getElementById('balRound').textContent = 'Round ' + balRound + ' of ' + BAL_TOTAL;
+    }
+    balSecLeft = balPhaseIn ? BAL_IN : BAL_OUT;
+  }
+}
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js').catch(() => {});
+function updateOnline() { document.body.classList.toggle('offline', !navigator.onLine); }
+window.addEventListener('online', updateOnline);
+window.addEventListener('offline', updateOnline);
+updateOnline();
+</script>
+</body>
+</html>

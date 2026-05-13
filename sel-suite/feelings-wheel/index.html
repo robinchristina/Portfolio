@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#3E2440">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Feelings Wheel">
+<title>Feelings Wheel</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --plum-deep:#3E2440; --plum-mid:#7A4A72; --plum-light:#C4A8C0;
+  --plum-wash:#F5EEF4; --parchment:#FAF6F0; --ink:#2A1A28; --ink-light:#9A7A96;
+  --safe-top:env(safe-area-inset-top,0px); --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--parchment);color:var(--ink);-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;}
+.app-shell{display:flex;flex-direction:column;min-height:100dvh;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom);}
+.app-header{background:var(--plum-deep);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.header-logo{font-size:1rem;font-weight:700;color:var(--plum-light);}
+.back-btn{display:none;align-items:center;gap:6px;background:none;border:none;color:var(--plum-light);font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;padding:4px 0;}
+.back-btn.visible{display:flex;}
+.screen{display:none;flex-direction:column;flex:1;padding:20px 20px 32px;animation:fadeUp .2s ease;}
+.screen.active{display:flex;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.screen-question{font-size:1.25rem;font-weight:800;color:var(--plum-deep);text-align:center;margin-bottom:16px;line-height:1.3;}
+
+/* Wheel screen */
+.wheel-wrap{display:flex;justify-content:center;margin-bottom:12px;}
+.wheel-svg{cursor:pointer;touch-action:manipulation;width:100%;max-width:320px;height:auto;}
+.wheel-hint{font-size:.8rem;color:var(--ink-light);text-align:center;font-family:'Nunito Sans',sans-serif;}
+
+/* Detail screen */
+.detail-circle-wrap{display:flex;justify-content:center;margin-bottom:16px;}
+.detail-circle{width:120px;height:120px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:12px;}
+.detail-circle-face{font-size:2.2rem;line-height:1;margin-bottom:4px;}
+.detail-circle-name{font-size:.95rem;font-weight:800;line-height:1.2;}
+.detail-circle-core{font-size:.7rem;font-family:'Nunito Sans',sans-serif;opacity:.75;margin-top:2px;}
+.detail-body-check{font-family:'Nunito Sans',sans-serif;font-size:.9rem;font-style:italic;text-align:center;padding:12px 16px;border-radius:10px;background:rgba(255,255,255,.65);margin-bottom:18px;line-height:1.55;color:var(--ink);}
+.strategies-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-light);margin-bottom:10px;}
+.strategies-list{display:flex;flex-direction:column;gap:8px;}
+.strategy-item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid rgba(196,168,192,.25);border-radius:12px;padding:12px 16px;font-size:.95rem;font-weight:600;color:var(--plum-deep);}
+.strategy-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.start-over-btn{margin-top:22px;background:none;border:2px solid rgba(196,168,192,.5);border-radius:12px;padding:12px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:700;color:var(--plum-mid);cursor:pointer;width:100%;}
+.start-over-btn:active{background:var(--plum-wash);}
+.offline-bar{display:none;background:#7A2A10;color:#fff;font-size:12px;text-align:center;padding:6px;}
+body.offline .offline-bar{display:block;}
+.install-banner{display:none;background:var(--plum-deep);border-radius:12px;padding:14px 16px;flex-direction:row;align-items:center;gap:12px;margin-bottom:14px;}
+.install-banner.visible{display:flex;}
+.install-text{flex:1;}
+.install-text p{font-size:13px;color:var(--plum-light);line-height:1.4;}
+.install-text strong{color:#fff;font-weight:700;}
+.install-btn{font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;background:#D4924A;color:#fff;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.install-dismiss{background:none;border:none;color:var(--plum-light);font-size:20px;cursor:pointer;padding:0 2px;line-height:1;flex-shrink:0;}
+.home-btn{background:none;border:none;color:var(--plum-light);font-family:"Nunito",sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;padding:4px 0;display:flex;align-items:center;gap:5px;text-decoration:none;}
+.breathe-link{display:block;margin-top:14px;text-align:center;padding:11px 16px;border-radius:12px;background:rgba(230,241,251,0.7);border:1px solid rgba(74,125,176,0.25);color:#185FA5;font-size:.85rem;font-weight:700;font-family:"Nunito",sans-serif;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <div class="offline-bar">You're offline — the app still works!</div>
+  <header class="app-header">
+    <a class="home-btn" href="../index.html">&#8962; Home</a>
+    <span class="header-logo">Feelings Wheel</span>
+    <button class="back-btn" id="backBtn" aria-label="Go back">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 8H3M7 4L3 8l4 4"/></svg>
+      Back
+    </button>
+  </header>
+
+  <!-- Screen 1 & 2 share the wheel -->
+  <div class="screen active" id="screen1">
+    <div class="install-banner" id="installBanner">
+  <div class="install-text">
+    <p><strong>Add to your home screen</strong><br>Use offline, anytime.</p>
+  </div>
+  <button class="install-btn" id="installBtn">Install</button>
+  <button class="install-dismiss" id="dismissBtn" aria-label="Dismiss">&#215;</button>
+</div>
+    <p class="screen-question" id="wheelQuestion">How are you feeling today?</p>
+    <div class="wheel-wrap">
+      <svg class="wheel-svg" viewBox="-1 -1 302 302" id="wheel"></svg>
+    </div>
+    <p class="wheel-hint" id="wheelHint">Tap a feeling to explore it</p>
+  </div>
+
+  <!-- Screen 3: detail -->
+  <div class="screen" id="screen3">
+    <div class="detail-circle-wrap">
+      <div class="detail-circle" id="detailCircle"></div>
+    </div>
+    <p class="detail-body-check" id="detailBody"></p>
+    <p class="strategies-label">Ways to feel better</p>
+    <div class="strategies-list" id="detailStrategies"></div>
+    <button class="start-over-btn" id="startOverBtn">Start over ↺</button>
+    <a class="breathe-link" href="../breathing/index.html">🌬 Need to calm down first? Try a breathing exercise</a>
+  </div>
+</div>
+
+<script>
+const FEELINGS = [
+  { core:"Happy",    color:"#F5C842", textColor:"#7A5C00", face:"😊", emotions:[
+    {name:"Joyful",       body:"Your heart might feel light and bouncy inside.",         strategies:["Do a happy dance","Draw something you love","Share your joy with a friend"]},
+    {name:"Excited",      body:"You might feel wiggly or like you have lots of energy.", strategies:["Take deep breaths","Jump or shake it out","Tell someone your good news"]},
+    {name:"Proud",        body:"You might feel tall and strong inside.",                 strategies:["Celebrate your hard work","Write it down","Say 'I did it!'"]},
+    {name:"Grateful",     body:"Your heart might feel warm and full.",                   strategies:["Thank someone","Write 3 good things","Give a hug"]},
+  ]},
+  { core:"Calm",     color:"#7DD4B8", textColor:"#1A5C46", face:"😌", emotions:[
+    {name:"Peaceful",     body:"Your body feels soft and easy, like floating.",          strategies:["Sit quietly outside","Listen to soft music","Take slow breaths"]},
+    {name:"Relaxed",      body:"Your muscles feel loose and heavy in a good way.",       strategies:["Stretch your arms out wide","Close your eyes a moment","Yawn and breathe out"]},
+    {name:"Safe",         body:"Your tummy feels settled and comfortable.",              strategies:["Stay near someone you trust","Hold something soft","Name 5 things you can see"]},
+    {name:"Content",      body:"You feel just right — not too much, not too little.",    strategies:["Enjoy the quiet moment","Do something cozy","Simply notice how good this feels"]},
+  ]},
+  { core:"Sad",      color:"#89B4E8", textColor:"#1A3E6E", face:"😢", emotions:[
+    {name:"Lonely",       body:"Your chest might feel empty or hollow.",                 strategies:["Talk to someone you trust","Write or draw your feelings","Give yourself a hug"]},
+    {name:"Disappointed", body:"You might feel heavy or droopy.",                       strategies:["Take a big breath out","Name what you hoped for","Try again or try something new"]},
+    {name:"Hurt",         body:"Your heart might feel sore or achy.",                   strategies:["Let yourself cry if you need to","Tell someone what happened","Be gentle with yourself"]},
+    {name:"Left out",     body:"Your tummy might feel knotted or empty.",               strategies:["Find a kind friend to sit with","Ask to join","Do something you enjoy alone"]},
+  ]},
+  { core:"Angry",    color:"#F28B6E", textColor:"#7A2A10", face:"😠", emotions:[
+    {name:"Frustrated",   body:"You might feel hot or tense in your hands and face.",   strategies:["Squeeze something soft","Count to 10 slowly","Take 3 deep belly breaths"]},
+    {name:"Annoyed",      body:"You might feel prickly or tight all over.",             strategies:["Walk away for a moment","Tell someone calmly","Breathe out slowly like a balloon"]},
+    {name:"Mad",          body:"You might feel hot, shaky, or want to yell.",           strategies:["Stomp your feet outside","Draw your mad feeling out","Use your words when you're ready"]},
+    {name:"Jealous",      body:"Your chest might feel tight or heavy.",                 strategies:["Notice what you do have","Tell someone how you feel","Celebrate someone else's good thing"]},
+  ]},
+  { core:"Scared",   color:"#C49FD4", textColor:"#4A1E6E", face:"😨", emotions:[
+    {name:"Worried",      body:"Your tummy might feel fluttery or tight.",              strategies:["Name your worry out loud","Take 4 slow breaths","Ask a grown-up for help"]},
+    {name:"Nervous",      body:"You might feel shaky or have a fast heartbeat.",        strategies:["Squeeze and release your hands","Remind yourself you are safe","Talk to someone you trust"]},
+    {name:"Afraid",       body:"Your whole body might feel frozen or want to run.",     strategies:["Find a safe grown-up right away","Name 5 things you can see","Hold something comforting"]},
+    {name:"Shy",          body:"You might feel small or want to hide a little.",        strategies:["It's okay to take your time","Wave or smile first","Stay near someone familiar"]},
+  ]},
+  { core:"Surprised",color:"#F5A67A", textColor:"#7A3A10", face:"😲", emotions:[
+    {name:"Amazed",       body:"Your eyes go wide and your mouth opens.",               strategies:["Say 'wow!' out loud","Share what surprised you","Draw or describe what you saw"]},
+    {name:"Confused",     body:"Your head might feel fuzzy or mixed up.",               strategies:["Ask someone to explain","Say 'I don't understand yet'","Take it one small step at a time"]},
+    {name:"Curious",      body:"You feel a pull toward something interesting.",         strategies:["Ask a question","Explore and investigate","Look it up together"]},
+    {name:"Shocked",      body:"Your body might freeze for a moment.",                  strategies:["Take a breath first","Sit down if you need to","Talk about what happened"]},
+  ]},
+];
+
+const NS = 'http://www.w3.org/2000/svg';
+const svg = document.getElementById('wheel');
+const CX = 150, CY = 150, OUTER = 148, INNER = 56;
+const TWO_PI = Math.PI * 2;
+let currentStep = 1; // 1 = core wheel, 2 = sub wheel
+let selectedCore = -1;
+
+function pxy(r, a) { return [CX + r * Math.cos(a), CY + r * Math.sin(a)]; }
+
+function slicePath(r1, r2, a1, a2) {
+  const [x1,y1] = pxy(r2, a1), [x2,y2] = pxy(r2, a2);
+  const [x3,y3] = pxy(r1, a2), [x4,y4] = pxy(r1, a1);
+  const la = (a2 - a1) > Math.PI ? 1 : 0;
+  return `M${x1} ${y1} A${r2} ${r2} 0 ${la} 1 ${x2} ${y2} L${x3} ${y3} A${r1} ${r1} 0 ${la} 0 ${x4} ${y4}Z`;
+}
+
+function svgEl(tag, attrs) {
+  const el = document.createElementNS(NS, tag);
+  Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k, v));
+  return el;
+}
+
+function svgText(txt, x, y, size, weight, fill, rotate) {
+  const el = svgEl('text', {
+    x, y, 'text-anchor':'middle', 'dominant-baseline':'middle',
+    'font-size': size, 'font-family':'Nunito, sans-serif',
+    'font-weight': weight, fill, 'pointer-events':'none',
+    ...(rotate ? {transform:`rotate(${rotate},${CX},${CY})`} : {})
+  });
+  el.textContent = txt;
+  return el;
+}
+
+function buildCoreWheel() {
+  svg.innerHTML = '';
+  const N = FEELINGS.length;
+  const sliceAngle = TWO_PI / N;
+  const offset = -Math.PI / 2;
+
+  // center
+  svg.appendChild(svgEl('circle', {cx:CX, cy:CY, r:INNER-1, fill:'#FAF6F0', stroke:'rgba(196,168,192,0.3)', 'stroke-width':'0.5'}));
+
+  FEELINGS.forEach((f, i) => {
+    const a1 = offset + i * sliceAngle;
+    const a2 = a1 + sliceAngle;
+    const mid = (a1 + a2) / 2;
+
+    const g = svgEl('g', {style:'cursor:pointer'});
+
+    const path = svgEl('path', {
+      d: slicePath(INNER + 1, OUTER, a1 + 0.018, a2 - 0.018),
+      fill: f.color, stroke:'#FAF6F0', 'stroke-width':'2'
+    });
+    path.style.transition = 'opacity 0.15s';
+    g.appendChild(path);
+
+    // emoji + label stacked vertically, centered in slice midpoint, no rotation
+    const midR = INNER + (OUTER - INNER) * 0.54;
+    const [mx, my] = pxy(midR, mid);
+    const face = svgEl('text', {
+      x: mx, y: my - 9,
+      'text-anchor':'middle', 'dominant-baseline':'middle',
+      'font-size':'20', 'pointer-events':'none'
+    });
+    face.textContent = f.face;
+    g.appendChild(face);
+    const lbl = svgEl('text', {
+      x: mx, y: my + 12,
+      'text-anchor':'middle', 'dominant-baseline':'middle',
+      'font-size':'8.5', 'font-family':'Nunito, sans-serif',
+      'font-weight':'800', fill: f.textColor, 'pointer-events':'none'
+    });
+    lbl.textContent = f.core;
+    g.appendChild(lbl);
+
+    g.addEventListener('click', () => showSubWheel(i));
+    g.addEventListener('mouseenter', () => { path.style.opacity = '0.82'; });
+    g.addEventListener('mouseleave', () => { path.style.opacity = '1'; });
+    svg.appendChild(g);
+  });
+
+  // center sun
+  const sun = svgEl('text', {x:CX, y:CY+2, 'text-anchor':'middle', 'dominant-baseline':'middle', 'font-size':'28', 'pointer-events':'none'});
+  sun.textContent = '☀️';
+  svg.appendChild(sun);
+}
+
+function buildSubWheel(fi) {
+  svg.innerHTML = '';
+  const f = FEELINGS[fi];
+  const N = f.emotions.length;
+  const sliceAngle = TWO_PI / N;
+  const offset = -Math.PI / 2;
+
+  // slightly lighter center
+  svg.appendChild(svgEl('circle', {cx:CX, cy:CY, r:INNER-1, fill:'#FAF6F0', stroke:'rgba(196,168,192,0.3)', 'stroke-width':'0.5'}));
+
+  // make sub-slices slightly different shades by adjusting opacity
+  const opacities = [0.65, 0.78, 0.88, 1.0];
+
+  f.emotions.forEach((em, i) => {
+    const a1 = offset + i * sliceAngle;
+    const a2 = a1 + sliceAngle;
+    const mid = (a1 + a2) / 2;
+
+    const g = svgEl('g', {style:'cursor:pointer'});
+
+    const path = svgEl('path', {
+      d: slicePath(INNER + 1, OUTER, a1 + 0.018, a2 - 0.018),
+      fill: f.color, stroke:'#FAF6F0', 'stroke-width':'2',
+      opacity: opacities[i]
+    });
+    path.style.transition = 'opacity 0.15s';
+    g.appendChild(path);
+
+    // name centered in slice, no rotation, split to two lines if needed
+    const labelR = INNER + (OUTER - INNER) * 0.52;
+    const [lx, ly] = pxy(labelR, mid);
+    const words = em.name.split(' ');
+    if (words.length === 1) {
+      const t = svgEl('text', {
+        x:lx, y:ly, 'text-anchor':'middle', 'dominant-baseline':'middle',
+        'font-size':'11', 'font-family':'Nunito, sans-serif',
+        'font-weight':'800', fill: f.textColor, 'pointer-events':'none'
+      });
+      t.textContent = em.name;
+      g.appendChild(t);
+    } else {
+      const tg = svgEl('text', {
+        x:lx, y:ly, 'text-anchor':'middle',
+        'font-size':'10', 'font-family':'Nunito, sans-serif',
+        'font-weight':'800', fill: f.textColor, 'pointer-events':'none'
+      });
+      const t1 = document.createElementNS(NS, 'tspan');
+      t1.setAttribute('x', lx); t1.setAttribute('dy', '-5.5');
+      t1.textContent = words[0];
+      const t2 = document.createElementNS(NS, 'tspan');
+      t2.setAttribute('x', lx); t2.setAttribute('dy', '12');
+      t2.textContent = words.slice(1).join(' ');
+      tg.appendChild(t1); tg.appendChild(t2);
+      g.appendChild(tg);
+    }
+
+    g.addEventListener('click', () => showDetail(fi, i));
+    g.addEventListener('mouseenter', () => { path.style.opacity = String(opacities[i] * 0.82); });
+    g.addEventListener('mouseleave', () => { path.style.opacity = String(opacities[i]); });
+    svg.appendChild(g);
+  });
+
+  // center face
+  const face = svgEl('text', {x:CX, y:CY+2, 'text-anchor':'middle', 'dominant-baseline':'middle', 'font-size':'28', 'pointer-events':'none'});
+  face.textContent = f.face;
+  svg.appendChild(face);
+}
+
+function showSubWheel(fi) {
+  selectedCore = fi;
+  currentStep = 2;
+  const f = FEELINGS[fi];
+  document.getElementById('wheelQuestion').textContent = `You feel ${f.core.toLowerCase()} — which fits best?`;
+  document.getElementById('wheelHint').textContent = 'Tap a slice to learn more';
+  document.getElementById('backBtn').classList.add('visible');
+  buildSubWheel(fi);
+}
+
+function showDetail(fi, ei) {
+  const f = FEELINGS[fi];
+  const em = f.emotions[ei];
+
+  const circle = document.getElementById('detailCircle');
+  circle.style.background = f.color;
+  circle.innerHTML = `
+    <span class="detail-circle-face">${f.face}</span>
+    <span class="detail-circle-name" style="color:${f.textColor}">${em.name}</span>
+    <span class="detail-circle-core" style="color:${f.textColor}">A ${f.core.toLowerCase()} feeling</span>
+  `;
+
+  document.getElementById('detailBody').textContent = `Notice in your body: ${em.body}`;
+  document.getElementById('detailStrategies').innerHTML = em.strategies.map(s =>
+    `<div class="strategy-item"><div class="strategy-dot" style="background:${f.color}"></div>${s}</div>`
+  ).join('');
+
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen3').classList.add('active');
+  document.getElementById('backBtn').classList.add('visible');
+  window.scrollTo(0,0);
+}
+
+document.getElementById('backBtn').addEventListener('click', () => {
+  if (document.getElementById('screen3').classList.contains('active')) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen1').classList.add('active');
+    buildSubWheel(selectedCore);
+    const f = FEELINGS[selectedCore];
+    document.getElementById('wheelQuestion').textContent = `You feel ${f.core.toLowerCase()} — which fits best?`;
+    document.getElementById('wheelHint').textContent = 'Tap a slice to learn more';
+    currentStep = 2;
+  } else {
+    // back to core wheel
+    currentStep = 1;
+    document.getElementById('wheelQuestion').textContent = 'How are you feeling today?';
+    document.getElementById('wheelHint').textContent = 'Tap a feeling to explore it';
+    document.getElementById('backBtn').classList.remove('visible');
+    buildCoreWheel();
+  }
+});
+
+document.getElementById('startOverBtn').addEventListener('click', () => {
+  currentStep = 1;
+  document.getElementById('wheelQuestion').textContent = 'How are you feeling today?';
+  document.getElementById('wheelHint').textContent = 'Tap a feeling to explore it';
+  document.getElementById('backBtn').classList.remove('visible');
+  buildCoreWheel();
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen1').classList.add('active');
+  window.scrollTo(0,0);
+});
+
+// init
+buildCoreWheel();
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js').catch(() => {});
+function updateOnline() { document.body.classList.toggle('offline', !navigator.onLine); }
+window.addEventListener('online', updateOnline);
+window.addEventListener('offline', updateOnline);
+updateOnline();
+
+// Install banner
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').classList.add('visible');
+});
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('installBanner').classList.remove('visible');
+});
+document.getElementById('dismissBtn').addEventListener('click', () => {
+  document.getElementById('installBanner').classList.remove('visible');
+});
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installBanner').classList.remove('visible');
+});
+</script>
+</body>
+</html>
+

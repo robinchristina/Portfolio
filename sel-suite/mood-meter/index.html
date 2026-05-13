@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1A3A5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mood Meter">
+<meta name="description" content="A mood check-in tool based on the Yale Mood Meter for upper elementary and middle school students.">
+<title>Mood Meter</title>
+<link rel="manifest" href="../manifest.json">
+<link rel="apple-touch-icon" href="../icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --navy: #1A3A5C;
+  --navy-light: #4A7DB0;
+  --navy-wash: #E6F1FB;
+  --parchment: #F8F7F4;
+  --ink: #1C1C1E;
+  --ink-mid: #4A4A52;
+  --ink-light: #8A8A96;
+  --border: rgba(0,0,0,0.1);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* zone colors */
+  --red-bg: #F9CDCD; --red-text: #7A2020; --red-dot: #E05C5C;
+  --yellow-bg: #FFF0B0; --yellow-text: #6B5500; --yellow-dot: #D4A000;
+  --blue-bg: #C5D9F2; --blue-text: #1A3A5C; --blue-dot: #4A7DB0;
+  --green-bg: #C2E8D4; --green-text: #1A4D30; --green-dot: #2E8A57;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: 'Nunito', sans-serif;
+  background: var(--parchment);
+  color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+}
+
+/* ── Header ── */
+.app-header {
+  background: var(--navy);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.header-logo {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy-wash);
+  letter-spacing: 0.02em;
+}
+.back-btn {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--navy-wash);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 0;
+  opacity: 0.85;
+}
+.back-btn.visible { display: flex; }
+.back-btn svg { flex-shrink: 0; }
+
+/* ── Screens ── */
+.screen {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  padding: 20px 20px 32px;
+  animation: fadeUp 0.2s ease;
+}
+.screen.active { display: flex; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Install banner ── */
+.install-banner {
+  display: none;
+  background: var(--navy);
+  border-radius: 12px;
+  padding: 14px 16px;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.install-banner.visible { display: flex; }
+.install-text { flex: 1; }
+.install-text p { font-size: 13px; color: var(--navy-wash); line-height: 1.4; }
+.install-text strong { color: #fff; font-weight: 700; }
+.install-btn {
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  background: #D4924A;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.install-dismiss {
+  background: none;
+  border: none;
+  color: var(--navy-wash);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* ── Step 1: Grid ── */
+.question {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-align: center;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+.step-hint {
+  font-size: 0.8rem;
+  color: var(--ink-light);
+  text-align: center;
+  font-family: 'Nunito Sans', sans-serif;
+  margin-bottom: 16px;
+}
+
+.grid-layout {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  grid-template-rows: 1fr auto;
+  gap: 0;
+  align-items: center;
+  flex: 1;
+  max-height: 420px;
+}
+.y-axis {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  grid-column: 1;
+  grid-row: 1;
+  height: 100%;
+}
+.y-axis-label {
+  font-size: 10px;
+  color: var(--ink-light);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  font-family: 'Nunito Sans', sans-serif;
+  letter-spacing: 0.04em;
+}
+.y-arrow { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.y-line { width: 1.5px; height: 40px; background: var(--ink-light); opacity: 0.4; }
+.arrow-up { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 6px solid var(--ink-light); opacity: 0.4; }
+.arrow-down { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 6px solid var(--ink-light); opacity: 0.4; }
+
+.grid-cell { grid-column: 2; grid-row: 1; }
+.grid-outer {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: crosshair;
+  user-select: none;
+  touch-action: none;
+  width: 100%;
+  aspect-ratio: 1;
+}
+.quadrants {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  width: 100%;
+  height: 100%;
+}
+.q {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: opacity 0.15s;
+}
+.q-name { font-size: 14px; font-weight: 700; }
+.q-desc { font-size: 10px; opacity: 0.75; text-align: center; line-height: 1.3; padding: 0 8px; font-family: 'Nunito Sans', sans-serif; }
+.q-red    { background: var(--red-bg);    color: var(--red-text); }
+.q-yellow { background: var(--yellow-bg); color: var(--yellow-text); }
+.q-blue   { background: var(--blue-bg);   color: var(--blue-text); }
+.q-green  { background: var(--green-bg);  color: var(--green-text); }
+
+.axis-line-h { position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; background: rgba(255,255,255,0.7); pointer-events: none; }
+.axis-line-v { position: absolute; top: 0; bottom: 0; left: 50%; width: 1.5px; background: rgba(255,255,255,0.7); pointer-events: none; }
+.pin {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 3px solid white;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  display: none;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.3);
+  transition: left 0.1s, top 0.1s;
+}
+
+.x-axis-wrap {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+.x-arrow { display: flex; align-items: center; gap: 2px; }
+.x-line { height: 1.5px; width: 40px; background: var(--ink-light); opacity: 0.4; }
+.arrow-left  { width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-right: 6px solid var(--ink-light); opacity: 0.4; }
+.arrow-right { width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 6px solid var(--ink-light); opacity: 0.4; }
+.x-axis-label { font-size: 10px; color: var(--ink-light); font-family: 'Nunito Sans', sans-serif; letter-spacing: 0.04em; }
+
+/* ── Step 2: Word picker ── */
+.zone-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 2rem;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.zone-dot { width: 10px; height: 10px; border-radius: 50%; }
+.zone-desc {
+  font-size: 13px;
+  color: var(--ink-mid);
+  text-align: center;
+  margin-bottom: 16px;
+  line-height: 1.55;
+  font-family: 'Nunito Sans', sans-serif;
+}
+.words-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.word-btn {
+  padding: 14px 10px;
+  border-radius: 10px;
+  border: 1.5px solid transparent;
+  background: transparent;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.12s, filter 0.12s;
+  line-height: 1.3;
+}
+.word-btn:active { transform: scale(0.96); filter: brightness(0.93); }
+
+/* ── Step 3: Detail ── */
+.circle-wrap { display: flex; justify-content: center; margin-bottom: 16px; }
+.circle-badge {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 14px;
+}
+.circle-word { font-size: 1rem; font-weight: 700; line-height: 1.2; }
+.circle-zone { font-size: 0.7rem; font-family: 'Nunito Sans', sans-serif; opacity: 0.75; margin-top: 4px; }
+
+.reflect-card {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+.section-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 6px;
+  font-family: 'Nunito Sans', sans-serif;
+}
+.reflect-q {
+  font-size: 0.9rem;
+  color: var(--ink);
+  line-height: 1.55;
+  font-family: 'Nunito Sans', sans-serif;
+  font-style: italic;
+}
+.strategies-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.strategy-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 0.9rem;
+  color: var(--ink);
+  line-height: 1.45;
+  font-family: 'Nunito Sans', sans-serif;
+}
+.strategy-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+
+.start-over-btn {
+  width: 100%;
+  padding: 12px;
+  background: none;
+  border: 2px solid rgba(74, 125, 176, 0.3);
+  border-radius: 10px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--navy-light);
+  cursor: pointer;
+}
+.start-over-btn:active { background: var(--navy-wash); }
+
+/* ── Offline bar ── */
+.offline-bar {
+  display: none;
+  background: #7A2A10;
+  color: #fff;
+  font-size: 12px;
+  text-align: center;
+  padding: 6px;
+  flex-shrink: 0;
+}
+body.offline .offline-bar { display: block; }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <div class="offline-bar">You're offline — the app still works!</div>
+
+  <header class="app-header">
+    <a class="home-btn" href="../index.html">&#8962; Home</a>
+    <span class="header-logo">Mood Meter</span>
+    <button class="back-btn" id="backBtn" aria-label="Go back">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 8H3M7 4L3 8l4 4"/></svg>
+      Back
+    </button>
+  </header>
+
+  <!-- Screen 1: Grid -->
+  <div class="screen active" id="screen1">
+    <div class="install-banner" id="installBanner">
+      <div class="install-text">
+        <p><strong>Add to your home screen</strong><br>Use offline, anytime.</p>
+      </div>
+      <button class="install-btn" id="installBtn">Install</button>
+      <button class="install-dismiss" id="dismissBtn" aria-label="Dismiss">&#215;</button>
+    </div>
+
+    <p class="question">Where are you on the mood meter right now?</p>
+    <p class="step-hint">Tap anywhere on the grid</p>
+
+    <div class="grid-layout">
+      <div class="y-axis">
+        <div class="y-arrow">
+          <div class="arrow-up"></div>
+          <div class="y-line"></div>
+        </div>
+        <span class="y-axis-label">Energy</span>
+        <div class="y-arrow">
+          <div class="y-line"></div>
+          <div class="arrow-down"></div>
+        </div>
+      </div>
+
+      <div class="grid-cell">
+        <div class="grid-outer" id="grid">
+          <div class="quadrants">
+            <div class="q q-red"><span class="q-name">Red</span><span class="q-desc">High energy, uncomfortable</span></div>
+            <div class="q q-yellow"><span class="q-name">Yellow</span><span class="q-desc">High energy, comfortable</span></div>
+            <div class="q q-blue"><span class="q-name">Blue</span><span class="q-desc">Low energy, uncomfortable</span></div>
+            <div class="q q-green"><span class="q-name">Green</span><span class="q-desc">Low energy, comfortable</span></div>
+          </div>
+          <div class="axis-line-h"></div>
+          <div class="axis-line-v"></div>
+          <div class="pin" id="pin"></div>
+        </div>
+      </div>
+
+      <div></div>
+      <div class="x-axis-wrap">
+        <div class="x-arrow">
+          <div class="arrow-left"></div>
+          <div class="x-line"></div>
+        </div>
+        <span class="x-axis-label">Pleasantness</span>
+        <div class="x-arrow">
+          <div class="x-line"></div>
+          <div class="arrow-right"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 2: Word picker -->
+  <div class="screen" id="screen2">
+    <div class="zone-badge" id="zoneBadge"></div>
+    <p class="zone-desc" id="zoneDesc"></p>
+    <p class="step-hint" style="margin-bottom:12px">Which word fits best right now?</p>
+    <div class="words-grid" id="wordsGrid"></div>
+  </div>
+
+  <!-- Screen 3: Reflect & regulate -->
+  <div class="screen" id="screen3">
+    <div class="circle-wrap">
+      <div class="circle-badge" id="circleBadge">
+        <span class="circle-word" id="circleWord"></span>
+        <span class="circle-zone" id="circleZone"></span>
+      </div>
+    </div>
+    <div class="reflect-card">
+      <p class="section-label">Reflect</p>
+      <p class="reflect-q" id="reflectQ"></p>
+    </div>
+    <p class="section-label" style="margin-bottom:10px">Try one of these</p>
+    <div class="strategies-list" id="stratList"></div>
+    <button class="start-over-btn" id="startOverBtn">Start over ↺</button>
+    <a class="breathe-link" href="../breathing/index.html">🌬 Need to calm down first? Try a breathing exercise</a>
+  </div>
+</div>
+
+<script>
+const ZONES = {
+  red: {
+    name: 'Red zone', color: '#E05C5C', bg: '#F9CDCD', text: '#7A2020',
+    desc: 'High energy, uncomfortable feelings — like anger, anxiety, or stress. These feelings signal something important. They\'re valid data.',
+    words: ['Angry','Anxious','Frustrated','Overwhelmed','Stressed','Nervous','Irritated','Panicked'],
+    reflectQ: 'What do you think triggered this feeling? Is there something your body is trying to tell you?',
+    strategies: [
+      'Take 5 slow, deep breaths — inhale for 4 counts, exhale for 6',
+      'Step away for a moment — a short walk or change of scenery can help reset',
+      'Name it to tame it: saying "I feel anxious" out loud can take some of its power away',
+      'Write down what\'s on your mind — get it out of your head and onto paper'
+    ]
+  },
+  yellow: {
+    name: 'Yellow zone', color: '#D4A000', bg: '#FFF0B0', text: '#6B5500',
+    desc: 'High energy, comfortable feelings — like excitement, joy, or enthusiasm. A great place for creativity and connection.',
+    words: ['Excited','Happy','Joyful','Motivated','Hopeful','Energized','Inspired','Grateful'],
+    reflectQ: 'What\'s contributing to this feeling? How might you hold onto or share this energy?',
+    strategies: [
+      'Channel this energy into something creative — a project, a conversation, or helping someone',
+      'Share your mood — positive energy is contagious',
+      'Notice what brought you here so you can return to it',
+      'Use this momentum to tackle something you\'ve been putting off'
+    ]
+  },
+  blue: {
+    name: 'Blue zone', color: '#4A7DB0', bg: '#C5D9F2', text: '#1A3A5C',
+    desc: 'Low energy, uncomfortable feelings — like sadness, loneliness, or boredom. These feelings often ask you to slow down and look inward.',
+    words: ['Sad','Lonely','Bored','Disappointed','Tired','Hopeless','Disconnected','Empty'],
+    reflectQ: 'What might be underneath this feeling? Is there something you\'re missing, grieving, or needing right now?',
+    strategies: [
+      'Be gentle with yourself — you don\'t have to fix this feeling immediately',
+      'Reach out to someone you trust, even just to say hi',
+      'Move your body gently — a stretch or short walk can shift your energy',
+      'Do one small thing that normally brings you comfort'
+    ]
+  },
+  green: {
+    name: 'Green zone', color: '#2E8A57', bg: '#C2E8D4', text: '#1A4D30',
+    desc: 'Low energy, comfortable feelings — like calm, contentment, or peace. A steady, grounded place for focus and reflection.',
+    words: ['Calm','Content','Peaceful','Relaxed','Focused','Thankful','Comfortable','Secure'],
+    reflectQ: 'What helped you get to this place? How can you protect or savor this feeling?',
+    strategies: [
+      'This is a great state for deep focus — use it for something that matters to you',
+      'Practice gratitude: name three things you appreciate right now',
+      'This is a good moment to reflect or journal — your thinking is clear',
+      'Share this calm with someone around you'
+    ]
+  }
+};
+
+let currentZone = null;
+
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const onScreen1 = id === 'screen1';
+  document.getElementById('backBtn').classList.toggle('visible', !onScreen1);
+  window.scrollTo(0, 0);
+}
+
+function getZone(px, py) {
+  if (px < 0.5 && py < 0.5) return 'red';
+  if (px >= 0.5 && py < 0.5) return 'yellow';
+  if (px < 0.5 && py >= 0.5) return 'blue';
+  return 'green';
+}
+
+const grid = document.getElementById('grid');
+
+function handleTap(e) {
+  const rect = grid.getBoundingClientRect();
+  const cx = e.touches ? e.touches[0].clientX : e.clientX;
+  const cy = e.touches ? e.touches[0].clientY : e.clientY;
+  const px = (cx - rect.left) / rect.width;
+  const py = (cy - rect.top) / rect.height;
+  const pin = document.getElementById('pin');
+  pin.style.left = (px * 100) + '%';
+  pin.style.top = (py * 100) + '%';
+  pin.style.display = 'block';
+  currentZone = getZone(px, py);
+  pin.style.background = ZONES[currentZone].color;
+  setTimeout(() => showWords(), 200);
+}
+
+grid.addEventListener('click', handleTap);
+grid.addEventListener('touchstart', e => { e.preventDefault(); handleTap(e); }, { passive: false });
+
+function showWords() {
+  const z = ZONES[currentZone];
+  const badge = document.getElementById('zoneBadge');
+  badge.style.background = z.bg;
+  badge.style.color = z.text;
+  badge.innerHTML = `<span class="zone-dot" style="background:${z.color}"></span>${z.name}`;
+  document.getElementById('zoneDesc').textContent = z.desc;
+  const g = document.getElementById('wordsGrid');
+  g.innerHTML = '';
+  z.words.forEach(w => {
+    const btn = document.createElement('button');
+    btn.className = 'word-btn';
+    btn.textContent = w;
+    btn.style.background = z.bg;
+    btn.style.color = z.text;
+    btn.style.borderColor = z.color + '66';
+    btn.addEventListener('click', () => showDetail(w));
+    g.appendChild(btn);
+  });
+  goTo('screen2');
+}
+
+function showDetail(word) {
+  const z = ZONES[currentZone];
+  const badge = document.getElementById('circleBadge');
+  badge.style.background = z.bg;
+  document.getElementById('circleWord').style.color = z.text;
+  document.getElementById('circleWord').textContent = word;
+  document.getElementById('circleZone').style.color = z.text;
+  document.getElementById('circleZone').textContent = z.name;
+  document.getElementById('reflectQ').textContent = z.reflectQ;
+  document.getElementById('stratList').innerHTML = z.strategies.map(s => `
+    <div class="strategy-item">
+      <div class="strategy-dot" style="background:${z.color}"></div>
+      <span>${s}</span>
+    </div>
+  `).join('');
+  goTo('screen3');
+}
+
+document.getElementById('backBtn').addEventListener('click', () => {
+  if (document.getElementById('screen3').classList.contains('active')) goTo('screen2');
+  else goTo('screen1');
+});
+
+document.getElementById('startOverBtn').addEventListener('click', () => {
+  document.getElementById('pin').style.display = 'none';
+  goTo('screen1');
+});
+
+// Install banner
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').classList.add('visible');
+});
+document.getElementById('installBtn').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('installBanner').classList.remove('visible');
+});
+document.getElementById('dismissBtn').addEventListener('click', () => {
+  document.getElementById('installBanner').classList.remove('visible');
+});
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installBanner').classList.remove('visible');
+});
+
+// Service worker & offline
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('../sw.js').catch(() => {});
+function updateOnline() { document.body.classList.toggle('offline', !navigator.onLine); }
+window.addEventListener('online', updateOnline);
+window.addEventListener('offline', updateOnline);
+updateOnline();
+</script>
+</body>
+</html>
+
